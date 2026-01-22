@@ -86,6 +86,15 @@ export const useTournamentStore = defineStore('tournament', () => {
   watch(structure, (newVal) => storage.saveStructure(newVal), { deep: true })
   watch(players, (newVal) => storage.savePlayers(newVal), { deep: true })
   watch(chips, (newVal) => storage.saveChips(newVal), { deep: true })
+
+  // Update all active players' stacks when startingStack changes
+  watch(startingStack, (newStack) => {
+    players.value.forEach(player => {
+      if (!player.isBusted) {
+        player.stack = newStack
+      }
+    })
+  })
   watch([startingStack, buyinAmount, useAnte, allowRebuy, useBounty, bountyAmount, useBreaks], () => {
     storage.saveSettings({
       startingStack: startingStack.value,

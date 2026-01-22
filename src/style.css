@@ -1,5 +1,42 @@
 @import "tailwindcss";
 
+/* Landscape variant for mobile */
+@custom-variant landscape (&:where([data-orientation="landscape"], @media (orientation: landscape)));
+
+/* Landscape styles only for mobile (screens < 1024px) */
+@media (orientation: landscape) and (max-width: 1023px) {
+  .landscape\:flex-row {
+    flex-direction: row;
+  }
+  .landscape\:flex-1 {
+    flex: 1 1 0%;
+  }
+  .landscape\:justify-center {
+    justify-content: center;
+  }
+  .landscape\:justify-start {
+    justify-content: flex-start;
+  }
+  .landscape\:gap-4 {
+    gap: 1rem;
+  }
+  .landscape\:hidden {
+    display: none;
+  }
+  .landscape\:h-\[84svh\] {
+    height: 84svh;
+  }
+  .landscape\:h-\[16svh\] {
+    height: 16svh;
+  }
+  .landscape\:p-1 {
+    padding: 0.25rem;
+  }
+  .landscape\:ml-0 {
+    margin-left: 0;
+  }
+}
+
 button {
   cursor: pointer;
 }
@@ -48,10 +85,22 @@ body {
   min-height: 100vh;
   min-height: 100dvh;
   color: white;
+  overscroll-behavior: none;
 }
 
 #app {
   width: 100%;
-  min-height: 100vh;
-  min-height: 100dvh;
+  height: 100vh;
+  height: 100dvh;
+}
+
+/* Safe area for notch/home indicator */
+.safe-area-inset {
+  padding-top: env(safe-area-inset-top, 0);
+  padding-left: env(safe-area-inset-left, 0);
+  padding-right: env(safe-area-inset-right, 0);
+}
+
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0);
 }
