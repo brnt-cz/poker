@@ -194,8 +194,8 @@ async function resetStructure() {
           <div v-if="editingLevel !== index" class="flex items-center justify-between p-3">
             <div class="flex items-center gap-3">
               <!-- Drag Handle -->
-              <div class="drag-handle cursor-grab active:cursor-grabbing p-1 -m-1 text-gray-500 hover:text-gray-300">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div class="drag-handle cursor-grab active:cursor-grabbing p-2 -m-2 text-gray-500 hover:text-gray-300 touch-manipulation">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-4 sm:w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16" />
                 </svg>
               </div>
@@ -225,48 +225,48 @@ async function resetStructure() {
           </div>
 
           <!-- Edit Mode -->
-          <div v-else class="p-4 bg-gray-700">
-            <div class="grid grid-cols-3 gap-3 mb-4" :class="{ 'grid-cols-4': store.useAnte }">
+          <div v-else class="p-3 sm:p-4 bg-gray-700">
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3 mb-3 sm:mb-4" :class="{ 'sm:grid-cols-4': store.useAnte }">
               <!-- Small Blind -->
               <div>
-                <label class="block text-sm text-gray-400 mb-1 text-center">SB</label>
+                <label class="block text-xs sm:text-sm text-gray-400 mb-1 text-center">SB</label>
                 <div class="flex items-stretch bg-gray-600 rounded-lg overflow-hidden">
-                  <button @click="adjustSmallBlind(-25)" class="w-10 flex items-center justify-center bg-gray-500 hover:bg-gray-400 text-base font-bold transition-colors">&minus;</button>
-                  <input v-model.number="editForm.smallBlind" type="number" class="w-full py-2 bg-gray-600 text-white text-center text-base focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
-                  <button @click="adjustSmallBlind(25)" class="w-10 flex items-center justify-center bg-gray-500 hover:bg-gray-400 text-base font-bold transition-colors">+</button>
+                  <button @click="adjustSmallBlind(-25)" class="w-8 sm:w-10 flex items-center justify-center bg-gray-500 hover:bg-gray-400 text-sm sm:text-base font-bold transition-colors">&minus;</button>
+                  <input v-model.number="editForm.smallBlind" type="number" class="w-full py-2 bg-gray-600 text-white text-center text-sm sm:text-base focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
+                  <button @click="adjustSmallBlind(25)" class="w-8 sm:w-10 flex items-center justify-center bg-gray-500 hover:bg-gray-400 text-sm sm:text-base font-bold transition-colors">+</button>
                 </div>
               </div>
               <!-- Big Blind -->
               <div>
-                <label class="block text-sm text-gray-400 mb-1 text-center">BB</label>
+                <label class="block text-xs sm:text-sm text-gray-400 mb-1 text-center">BB</label>
                 <div class="flex items-stretch bg-gray-600 rounded-lg overflow-hidden">
-                  <button @click="adjustBigBlind(-50)" class="w-10 flex items-center justify-center bg-gray-500 hover:bg-gray-400 text-base font-bold transition-colors">&minus;</button>
-                  <input v-model.number="editForm.bigBlind" type="number" class="w-full py-2 bg-gray-600 text-white text-center text-base focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
-                  <button @click="adjustBigBlind(50)" class="w-10 flex items-center justify-center bg-gray-500 hover:bg-gray-400 text-base font-bold transition-colors">+</button>
+                  <button @click="adjustBigBlind(-50)" class="w-8 sm:w-10 flex items-center justify-center bg-gray-500 hover:bg-gray-400 text-sm sm:text-base font-bold transition-colors">&minus;</button>
+                  <input v-model.number="editForm.bigBlind" type="number" class="w-full py-2 bg-gray-600 text-white text-center text-sm sm:text-base focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
+                  <button @click="adjustBigBlind(50)" class="w-8 sm:w-10 flex items-center justify-center bg-gray-500 hover:bg-gray-400 text-sm sm:text-base font-bold transition-colors">+</button>
                 </div>
               </div>
               <!-- Ante -->
               <div v-if="store.useAnte">
-                <label class="block text-sm text-gray-400 mb-1 text-center">Ante</label>
+                <label class="block text-xs sm:text-sm text-gray-400 mb-1 text-center">Ante</label>
                 <div class="flex items-stretch bg-gray-600 rounded-lg overflow-hidden">
-                  <button @click="adjustAnte(-25)" class="w-10 flex items-center justify-center bg-gray-500 hover:bg-gray-400 text-base font-bold transition-colors">&minus;</button>
-                  <input v-model.number="editForm.ante" type="number" class="w-full py-2 bg-gray-600 text-white text-center text-base focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
-                  <button @click="adjustAnte(25)" class="w-10 flex items-center justify-center bg-gray-500 hover:bg-gray-400 text-base font-bold transition-colors">+</button>
+                  <button @click="adjustAnte(-25)" class="w-8 sm:w-10 flex items-center justify-center bg-gray-500 hover:bg-gray-400 text-sm sm:text-base font-bold transition-colors">&minus;</button>
+                  <input v-model.number="editForm.ante" type="number" class="w-full py-2 bg-gray-600 text-white text-center text-sm sm:text-base focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
+                  <button @click="adjustAnte(25)" class="w-8 sm:w-10 flex items-center justify-center bg-gray-500 hover:bg-gray-400 text-sm sm:text-base font-bold transition-colors">+</button>
                 </div>
               </div>
               <!-- Délka -->
               <div>
-                <label class="block text-sm text-gray-400 mb-1 text-center">Čas</label>
+                <label class="block text-xs sm:text-sm text-gray-400 mb-1 text-center">Čas</label>
                 <div class="flex items-stretch bg-gray-600 rounded-lg overflow-hidden">
-                  <button @click="adjustDuration(-5)" class="w-10 flex items-center justify-center bg-gray-500 hover:bg-gray-400 text-base font-bold transition-colors">&minus;</button>
-                  <input v-model.number="editForm.duration" type="number" class="w-full py-2 bg-gray-600 text-white text-center text-base focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
-                  <button @click="adjustDuration(5)" class="w-10 flex items-center justify-center bg-gray-500 hover:bg-gray-400 text-base font-bold transition-colors">+</button>
+                  <button @click="adjustDuration(-5)" class="w-8 sm:w-10 flex items-center justify-center bg-gray-500 hover:bg-gray-400 text-sm sm:text-base font-bold transition-colors">&minus;</button>
+                  <input v-model.number="editForm.duration" type="number" class="w-full py-2 bg-gray-600 text-white text-center text-sm sm:text-base focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
+                  <button @click="adjustDuration(5)" class="w-8 sm:w-10 flex items-center justify-center bg-gray-500 hover:bg-gray-400 text-sm sm:text-base font-bold transition-colors">+</button>
                 </div>
               </div>
             </div>
-            <div class="flex justify-end gap-3">
-              <button @click="cancelEdit" class="px-5 py-2 bg-gray-600 hover:bg-gray-500 active:bg-gray-700 rounded-lg font-medium shadow-md hover:shadow-lg transition-all">Zrušit</button>
-              <button @click="saveEdit" class="px-5 py-2 bg-green-700 hover:bg-green-600 active:bg-green-800 rounded-lg font-medium shadow-md hover:shadow-lg transition-all">Uložit</button>
+            <div class="flex justify-end gap-2 sm:gap-3">
+              <button @click="cancelEdit" class="px-4 sm:px-5 py-2 bg-gray-600 hover:bg-gray-500 active:bg-gray-700 rounded-lg text-sm sm:text-base font-medium shadow-md hover:shadow-lg transition-all">Zrušit</button>
+              <button @click="saveEdit" class="px-4 sm:px-5 py-2 bg-green-700 hover:bg-green-600 active:bg-green-800 rounded-lg text-sm sm:text-base font-medium shadow-md hover:shadow-lg transition-all">Uložit</button>
             </div>
           </div>
         </div>

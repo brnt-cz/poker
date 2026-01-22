@@ -15,13 +15,13 @@ const timeClass = computed(() => {
   <div class="flex flex-col items-center justify-center">
     <div
       :class="[
-        'font-mono text-8xl md:text-9xl font-bold tracking-wider transition-colors duration-300',
+        'font-mono text-[5.5rem] lg:text-9xl font-bold tracking-wider transition-colors duration-300',
         timeClass
       ]"
     >
       {{ store.formattedTime }}
     </div>
-    <div class="mt-4 text-xl text-gray-400">
+    <div class="mt-1 sm:mt-2 text-base lg:text-2xl text-gray-400">
       Level {{ store.currentLevelIndex + 1 }} / {{ store.totalLevels }}
     </div>
   </div>

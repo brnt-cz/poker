@@ -43,11 +43,11 @@ function close() {
     <Transition name="modal">
       <div
         v-if="isOpen"
-        class="fixed inset-4 md:inset-10 lg:inset-20 bg-gray-900 text-white z-50 shadow-2xl rounded-xl flex flex-col max-h-[calc(100vh-2rem)] md:max-h-[calc(100vh-5rem)]"
+        class="fixed inset-0 lg:inset-10 xl:inset-20 bg-gray-900 text-white z-50 shadow-2xl lg:rounded-xl flex flex-col max-h-dvh lg:max-h-[calc(100vh-5rem)]"
       >
         <!-- Header -->
-        <div class="flex items-center justify-between p-4 border-b border-gray-700 shrink-0">
-          <h2 class="text-xl font-bold">Nastavení</h2>
+        <div class="flex items-center justify-between p-3 sm:p-4 border-b border-gray-700 shrink-0">
+          <h2 class="text-lg sm:text-xl font-bold">Nastavení</h2>
           <button
             @click="close"
             class="p-2 hover:bg-gray-700 rounded-lg transition-colors"
@@ -59,16 +59,16 @@ function close() {
         </div>
 
         <!-- Content -->
-        <div class="flex-1 min-h-0 p-4">
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-3 h-full max-h-full overflow-hidden">
+        <div class="flex-1 min-h-0 p-3 sm:p-4 overflow-y-auto">
+          <div class="flex flex-col lg:grid lg:grid-cols-3 gap-3 lg:h-full lg:max-h-full lg:overflow-hidden">
             <!-- 2/3: Players + Chips + Tournament -->
-            <div class="md:col-span-2 grid grid-cols-1 sm:grid-cols-3 gap-3 min-h-0 max-h-full">
-              <PlayerManager class="min-h-0 max-h-full" />
-              <ChipSettings class="min-h-0 max-h-full" />
-              <TournamentSettings class="min-h-0 max-h-full" />
+            <div class="lg:col-span-2 flex flex-col lg:grid lg:grid-cols-3 gap-3 lg:min-h-0 lg:max-h-full">
+              <PlayerManager class="min-h-[280px] lg:min-h-0 lg:max-h-full" />
+              <ChipSettings class="min-h-[230px] lg:min-h-0 lg:max-h-full" />
+              <TournamentSettings class="min-h-[280px] lg:min-h-0 lg:max-h-full" />
             </div>
             <!-- 1/3: Structure -->
-            <StructureEditor class="min-h-0 max-h-full" />
+            <StructureEditor class="min-h-[320px] lg:min-h-0 lg:max-h-full" />
           </div>
         </div>
       </div>

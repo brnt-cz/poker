@@ -18,6 +18,7 @@ Turnajový časovač pro domácí pokerové turnaje. Optimalizováno pro mobily 
 - Rebuy povolen pouze v první hodině (nastavitelné)
 - Sledování pořadí vyřazení pro výplaty
 - Výpočet prize poolu s automatickým rozdělením výher
+- Automatická aktualizace stacků při změně startovacího stacku
 
 ### Nastavení turnaje
 - Výše buy-inu (výchozí 100 Kč)
@@ -48,6 +49,15 @@ Turnajový časovač pro domácí pokerové turnaje. Optimalizováno pro mobily 
 - Instalovatelné jako aplikace na mobilu
 - Funguje offline
 - Vlastní ikony
+- Maskable ikona pro Android (adaptivní ikony)
+
+### Responzivní design
+- Optimalizováno pro mobily (portrait i landscape)
+- Fullscreen zobrazení bez scrollování
+- Použití `svh` jednotek pro správnou výšku na mobilech
+- Zakázán pull-to-refresh gesture
+- Desktop zobrazení s většími fonty
+- Wake Lock tlačítko pouze na mobilech
 
 ## Technologie
 

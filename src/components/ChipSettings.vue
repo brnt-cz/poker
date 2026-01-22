@@ -147,14 +147,15 @@ const availableColors = [
       <template v-if="editingChipId">
         <div class="fixed inset-0 z-[60]" @click="stopEditChip" />
         <div
-          class="fixed z-[70] bg-gray-700 rounded-lg p-3 shadow-xl grid grid-cols-4 gap-2 -translate-x-1/2"
-          :style="{ top: dropdownPosition.top + 'px', left: dropdownPosition.left + 'px' }"
+          class="fixed z-[70] bg-gray-700 rounded-lg p-3 shadow-xl grid grid-cols-4 gap-2 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 sm:top-auto sm:left-auto sm:translate-x-0 sm:translate-y-0 sm:-translate-x-1/2"
+          :style="{ '--dropdown-top': dropdownPosition.top + 'px', '--dropdown-left': dropdownPosition.left + 'px' }"
+          :class="{ 'sm:!top-[var(--dropdown-top)] sm:!left-[var(--dropdown-left)]': true }"
         >
           <button
             v-for="color in availableColors"
             :key="color.value"
             @click="store.updateChip(editingChipId!, { color: color.value, label: color.label }); stopEditChip()"
-            class="w-10 h-10 rounded-full border-2 border-gray-500 hover:border-white active:scale-95 transition-all"
+            class="w-12 h-12 sm:w-10 sm:h-10 rounded-full border-2 border-gray-500 hover:border-white active:scale-95 transition-all"
             :style="{ backgroundColor: color.value }"
             :title="color.label"
           />
