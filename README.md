@@ -1,16 +1,53 @@
 # Poker Timer
 
-Turnajovy casovac pro domaci pokerove turnaje. Mobilne optimalizovany s podporou Wake Lock API.
+Turnajový časovač pro domácí pokerové turnaje. Optimalizováno pro mobily s podporou PWA a Wake Lock API.
 
 ## Funkce
 
-- Countdown timer s nastavitelnou strukturou blindu
-- Zobrazeni aktualnich a pristich blindu (SB/BB/Ante)
-- Ovladani: Start/Pause, predchozi/dalsi level, uprava casu
-- Zvukova upozorneni na konec levelu (Web Audio API)
+### Časovač a blindy
+- Odpočítávací časovač s nastavitelnou strukturou blindů
+- Zobrazení aktuálních a následujících blindů (SB/BB/Ante)
+- Ovládání: Start/Pause, předchozí/další level, úprava času (+/- 10s, 1min)
+- Zvuková upozornění na konec levelu (Web Audio API)
 - Vibrace na mobilech
-- Wake Lock - obrazovka nezhasne behem hry
-- Statistiky: pocet hracu, prumerny stack, prize pool
+- Wake Lock - obrazovka nezhasne během hry
+
+### Správa hráčů
+- Přidání/odebrání hráčů
+- Sledování Bust/Rebuy
+- Rebuy povolen pouze v první hodině (nastavitelné)
+- Sledování pořadí vyřazení pro výplaty
+- Výpočet prize poolu s automatickým rozdělením výher
+
+### Nastavení turnaje
+- Výše buy-inu (výchozí 100 Kč)
+- Startovací stack (výchozí 10 000 žetonů)
+- Přepínač ante
+- Přepínač rebuy
+- Přepínač bounty s nastavitelnou částkou
+- Přepínač přestávek
+
+### Správa žetonů
+- Nastavitelné hodnoty a barvy žetonů
+- 12 barevných možností
+- Automatický rozpis žetonů pro startovací stack
+
+### Struktura blindů
+- Editovatelné levely s +/- ovládáním
+- Drag & drop pro změnu pořadí levelů
+- Přidání/odebrání levelů a přestávek
+- Přepínač přestávek
+- Reset na výchozí strukturu
+
+### Ukládání dat
+- Všechna nastavení ukládána do localStorage
+- Obnovení turnaje po refreshi stránky
+- Možnost kompletního resetu
+
+### PWA
+- Instalovatelné jako aplikace na mobilu
+- Funguje offline
+- Vlastní ikony
 
 ## Technologie
 
@@ -18,7 +55,7 @@ Turnajovy casovac pro domaci pokerove turnaje. Mobilne optimalizovany s podporou
 - Vite
 - TypeScript
 - Pinia (state management)
-- Tailwind CSS
+- Tailwind CSS 4
 - VueUse
 
 ## Instalace
@@ -27,13 +64,13 @@ Turnajovy casovac pro domaci pokerove turnaje. Mobilne optimalizovany s podporou
 npm install
 ```
 
-## Vyvoj
+## Vývoj
 
 ```bash
 npm run dev
 ```
 
-Aplikace bezi na `http://localhost:5173`
+Aplikace běží na `http://localhost:5173`
 
 ## Build
 
@@ -41,37 +78,52 @@ Aplikace bezi na `http://localhost:5173`
 npm run build
 ```
 
-Vystup je v adresari `dist/`.
+Výstup v adresáři `dist/`.
 
 ## Struktura projektu
 
 ```
 src/
 ├── components/
-│   ├── Timer.vue           # Countdown displej
-│   ├── BlindDisplay.vue    # Zobrazeni blindu
-│   ├── ControlPanel.vue    # Ovladaci tlacitka
-│   ├── Stats.vue           # Statistiky turnaje
-│   └── WakeLockToggle.vue  # Prepinac wake lock
+│   ├── Timer.vue              # Odpočítávací displej
+│   ├── BlindDisplay.vue       # Zobrazení blindů
+│   ├── ControlPanel.vue       # Ovládací tlačítka
+│   ├── Stats.vue              # Statistiky turnaje
+│   ├── WakeLockToggle.vue     # Přepínač wake lock
+│   ├── SettingsDrawer.vue     # Modální okno nastavení
+│   ├── PlayerManager.vue      # Seznam hráčů a výplaty
+│   ├── ChipSettings.vue       # Nastavení žetonů
+│   ├── TournamentSettings.vue # Nastavení turnaje
+│   ├── StructureEditor.vue    # Editor struktury blindů
+│   └── ConfirmDialog.vue      # Potvrzovací dialog
 ├── composables/
-│   ├── useTimer.ts         # Timer logika
-│   ├── useWakeLock.ts      # Screen Wake Lock API
-│   └── useNotifications.ts # Zvuky a vibrace
+│   ├── useTimer.ts            # Logika časovače
+│   ├── useWakeLock.ts         # Screen Wake Lock API
+│   ├── useNotifications.ts    # Zvuky a vibrace
+│   └── useStorage.ts          # Persistence do localStorage
 ├── stores/
-│   └── tournament.ts       # Pinia store
+│   └── tournament.ts          # Pinia store
 ├── types/
-│   └── poker.ts            # TypeScript typy
+│   └── poker.ts               # TypeScript typy a výchozí hodnoty
 └── App.vue
 ```
 
-## Konfigurace turnaje
+## Výchozí konfigurace
 
-Vychozi struktura blindu je v `src/types/poker.ts`. Muzete upravit:
+### Struktura blindů (19 levelů)
+Začíná na 5/10, přestávky každé 3 levely.
 
-- `smallBlind` / `bigBlind` / `ante` - vyse sazek
-- `duration` - delka levelu v sekundach (1200 = 20 minut)
-- `isBreak` - oznaceni prestavky
+### Hodnoty žetonů
+- 5 (Bílá), 10 (Červená), 25 (Zelená), 100 (Černá), 500 (Fialová), 1000 (Žlutá), 5000 (Oranžová)
 
-## License
+### Výchozí nastavení turnaje
+- Buy-in: 100 Kč
+- Startovací stack: 10 000
+- Bounty: 50 Kč
+- Ante: zapnuto
+- Rebuy: zapnuto (pouze první hodinu)
+- Přestávky: zapnuto
+
+## Licence
 
 MIT

@@ -15,7 +15,7 @@ function formatNumber(num: number): string {
     <!-- Break -->
     <div v-if="store.isBreak" class="text-center py-8">
       <div class="text-4xl md:text-6xl font-bold text-green-400 mb-4">
-        PRESTAVKA
+        PŘESTÁVKA
       </div>
       <div v-if="store.currentLevel?.breakMessage" class="text-xl text-gray-300">
         {{ store.currentLevel.breakMessage }}
@@ -30,24 +30,24 @@ function formatNumber(num: number): string {
         <div class="text-4xl md:text-6xl font-bold text-white">
           {{ formatNumber(store.currentLevel?.smallBlind ?? 0) }} / {{ formatNumber(store.currentLevel?.bigBlind ?? 0) }}
         </div>
-        <div v-if="store.currentLevel?.ante" class="text-2xl text-yellow-400 mt-2">
+        <div v-if="store.useAnte && store.currentLevel?.ante" class="text-2xl text-yellow-400 mt-2">
           Ante: {{ formatNumber(store.currentLevel.ante) }}
         </div>
       </div>
 
       <!-- Next Level -->
       <div v-if="store.nextLevel && !store.nextLevel.isBreak" class="text-center pt-4 border-t border-gray-700">
-        <div class="text-gray-500 text-sm uppercase tracking-wider mb-1">Dalsi level</div>
+        <div class="text-gray-500 text-sm uppercase tracking-wider mb-1">Další level</div>
         <div class="text-xl text-gray-400">
           {{ formatNumber(store.nextLevel.smallBlind) }} / {{ formatNumber(store.nextLevel.bigBlind) }}
-          <span v-if="store.nextLevel.ante" class="text-yellow-600">
+          <span v-if="store.useAnte && store.nextLevel.ante" class="text-yellow-600">
             (Ante: {{ formatNumber(store.nextLevel.ante) }})
           </span>
         </div>
       </div>
       <div v-else-if="store.nextLevel?.isBreak" class="text-center pt-4 border-t border-gray-700">
-        <div class="text-gray-500 text-sm uppercase tracking-wider mb-1">Dalsi</div>
-        <div class="text-xl text-green-500">PRESTAVKA</div>
+        <div class="text-gray-500 text-sm uppercase tracking-wider mb-1">Další</div>
+        <div class="text-xl text-green-500">PŘESTÁVKA</div>
       </div>
     </div>
   </div>

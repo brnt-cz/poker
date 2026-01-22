@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Poker chip -->
+  <circle cx="50" cy="50" r="45" fill="#1a472a" stroke="#d4af37" stroke-width="3"/>
+
+  <!-- Inner ring -->
+  <circle cx="50" cy="50" r="35" fill="none" stroke="#d4af37" stroke-width="2"/>
+
+  <!-- Edge notches - cardinal directions -->
+  <g fill="#d4af37">
+    <!-- North -->
+    <rect x="47" y="6" width="6" height="10" rx="2"/>
+    <!-- South -->
+    <rect x="47" y="84" width="6" height="10" rx="2"/>
+    <!-- West -->
+    <rect x="6" y="47" width="10" height="6" rx="2"/>
+    <!-- East -->
+    <rect x="84" y="47" width="10" height="6" rx="2"/>
+  </g>
+
+  <!-- Edge notches - diagonal directions -->
+  <g fill="#d4af37">
+    <!-- NE -->
+    <rect x="-3" y="-5" width="6" height="10" rx="2" transform="translate(78, 22) rotate(45)"/>
+    <!-- NW -->
+    <rect x="-3" y="-5" width="6" height="10" rx="2" transform="translate(22, 22) rotate(-45)"/>
+    <!-- SE -->
+    <rect x="-3" y="-5" width="6" height="10" rx="2" transform="translate(78, 78) rotate(-45)"/>
+    <!-- SW -->
+    <rect x="-3" y="-5" width="6" height="10" rx="2" transform="translate(22, 78) rotate(45)"/>
+  </g>
+
+  <!-- Center circle -->
+  <circle cx="50" cy="50" r="20" fill="#35654d" stroke="#d4af37" stroke-width="2"/>
+
+  <!-- Spade symbol -->
+  <path d="M50 35 C50 35 38 45 38 52 C38 57 42 60 46 60 C44 62 43 65 43 65 L57 65 C57 65 56 62 54 60 C58 60 62 57 62 52 C62 45 50 35 50 35 Z" fill="#d4af37"/>
+</svg>
