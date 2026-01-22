@@ -13,7 +13,7 @@ const store = useTournamentStore()
         @click="store.goToPreviousLevel"
         :disabled="store.currentLevelIndex === 0"
         class="p-4 rounded-full bg-gray-700 hover:bg-gray-600 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-        title="Predchozi level"
+        title="Předchozí level"
       >
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
@@ -23,17 +23,16 @@ const store = useTournamentStore()
       <!-- Play/Pause -->
       <button
         @click="store.toggle"
-        class="p-6 rounded-full bg-green-600 hover:bg-green-500 transition-colors"
+        class="p-7 rounded-full bg-green-600 hover:bg-green-500 transition-colors"
         :title="store.isRunning ? 'Pauza' : 'Start'"
       >
-        <!-- Play Icon -->
-        <svg v-if="!store.isRunning" xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        <!-- Play Icon (rounded triangle) -->
+        <svg v-if="!store.isRunning" xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M8 5.14v13.72c0 1.04 1.13 1.69 2.03 1.17l10.84-6.86c.87-.55.87-1.79 0-2.34L10.03 3.97C9.13 3.45 8 4.1 8 5.14z" />
         </svg>
-        <!-- Pause Icon -->
-        <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        <!-- Pause Icon (rounded bars) -->
+        <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M6 4a2 2 0 0 1 2 2v12a2 2 0 1 1-4 0V6a2 2 0 0 1 2-2zm12 0a2 2 0 0 1 2 2v12a2 2 0 1 1-4 0V6a2 2 0 0 1 2-2z" />
         </svg>
       </button>
 
@@ -42,7 +41,7 @@ const store = useTournamentStore()
         @click="store.goToNextLevel"
         :disabled="store.currentLevelIndex >= store.totalLevels - 1"
         class="p-4 rounded-full bg-gray-700 hover:bg-gray-600 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-        title="Dalsi level"
+        title="Další level"
       >
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
