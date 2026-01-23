@@ -27,6 +27,8 @@ export const useTournamentStore = defineStore('tournament', () => {
   const useBounty = ref(savedSettings?.useBounty ?? false)
   const bountyAmount = ref(savedSettings?.bountyAmount ?? 50)
   const useBreaks = ref(savedSettings?.useBreaks ?? true)
+  const levelDuration = ref(savedSettings?.levelDuration ?? 1200) // 20 minut v sekundách
+  const breakDuration = ref(savedSettings?.breakDuration ?? 600) // 10 minut v sekundách
   const chips = ref<ChipDenomination[]>(savedChips || [...defaultChips])
   // Track finish order - players who busted (last element = last to bust = 2nd place)
   const finishOrder = ref<{ id: string; name: string; position: number }[]>(savedState?.finishOrder ?? [])
@@ -73,12 +75,12 @@ export const useTournamentStore = defineStore('tournament', () => {
     for (let i = 0; i < currentLevelIndex.value; i++) {
       const level = structure.value[i]
       if (level) {
-        elapsed += level.duration
+        elapsed += level.isBreak ? breakDuration.value : levelDuration.value
       }
     }
     // Add time spent in current level
-    const currentLevelDuration = currentLevel.value?.duration ?? 0
-    elapsed += currentLevelDuration - remainingSeconds.value
+    const currentLevelDur = currentLevel.value?.isBreak ? breakDuration.value : levelDuration.value
+    elapsed += currentLevelDur - remainingSeconds.value
     return elapsed
   })
 
@@ -95,7 +97,7 @@ export const useTournamentStore = defineStore('tournament', () => {
       }
     })
   })
-  watch([startingStack, buyinAmount, useAnte, allowRebuy, useBounty, bountyAmount, useBreaks], () => {
+  watch([startingStack, buyinAmount, useAnte, allowRebuy, useBounty, bountyAmount, useBreaks, levelDuration, breakDuration], () => {
     storage.saveSettings({
       startingStack: startingStack.value,
       buyinAmount: buyinAmount.value,
@@ -104,6 +106,8 @@ export const useTournamentStore = defineStore('tournament', () => {
       useBounty: useBounty.value,
       bountyAmount: bountyAmount.value,
       useBreaks: useBreaks.value,
+      levelDuration: levelDuration.value,
+      breakDuration: breakDuration.value,
     })
   })
   watch([currentLevelIndex, remainingSeconds, isRunning, finishOrder], () => {
@@ -118,7 +122,8 @@ export const useTournamentStore = defineStore('tournament', () => {
   // Actions
   function initializeLevel() {
     if (currentLevel.value) {
-      remainingSeconds.value = currentLevel.value.duration
+      // Použít globální délku podle typu levelu
+      remainingSeconds.value = currentLevel.value.isBreak ? breakDuration.value : levelDuration.value
     }
   }
 
@@ -283,6 +288,8 @@ export const useTournamentStore = defineStore('tournament', () => {
     useBounty.value = false
     bountyAmount.value = 50
     useBreaks.value = true
+    levelDuration.value = 1200
+    breakDuration.value = 600
     storage.clearAll()
     initializeLevel()
   }
@@ -310,6 +317,8 @@ export const useTournamentStore = defineStore('tournament', () => {
     useBounty,
     bountyAmount,
     useBreaks,
+    levelDuration,
+    breakDuration,
     chips,
     finishOrder,
     // Getters

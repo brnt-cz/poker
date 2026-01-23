@@ -88,6 +88,26 @@ function adjustBounty(amount: number) {
   store.bountyAmount = Math.max(0, store.bountyAmount + amount)
 }
 
+function adjustLevelDuration(amount: number) {
+  store.levelDuration = Math.max(60, store.levelDuration + amount)
+}
+
+function adjustBreakDuration(amount: number) {
+  store.breakDuration = Math.max(60, store.breakDuration + amount)
+}
+
+function formatDuration(seconds: number): number {
+  return Math.floor(seconds / 60)
+}
+
+function setLevelDuration(minutes: number) {
+  store.levelDuration = Math.max(1, minutes) * 60
+}
+
+function setBreakDuration(minutes: number) {
+  store.breakDuration = Math.max(1, minutes) * 60
+}
+
 </script>
 
 <template>
@@ -111,55 +131,58 @@ function adjustBounty(amount: number) {
 
     <!-- Content -->
     <div class="p-4 space-y-4 flex-1 overflow-y-auto">
-      <!-- Bounty Amount -->
-      <div v-if="store.useBounty">
-        <label class="block text-sm text-gray-400 mb-2">Bounty (Kč)</label>
-        <div class="flex items-stretch bg-gray-700 rounded-lg overflow-hidden">
-          <button
-            @click="adjustBounty(-10)"
-            class="w-12 flex items-center justify-center bg-gray-600 hover:bg-gray-500 text-xl font-bold transition-colors"
-          >
-            &minus;
-          </button>
-          <input
-            v-model.number="store.bountyAmount"
-            type="number"
-            min="0"
-            step="10"
-            class="flex-1 px-3 py-2 bg-gray-700 text-white text-center font-medium focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-          />
-          <button
-            @click="adjustBounty(10)"
-            class="w-12 flex items-center justify-center bg-gray-600 hover:bg-gray-500 text-xl font-bold transition-colors"
-          >
-            +
-          </button>
+      <!-- Buy-in & Bounty -->
+      <div class="grid gap-3" :class="store.useBounty ? 'grid-cols-2' : 'grid-cols-1'">
+        <!-- Buy-in -->
+        <div>
+          <label class="block text-sm text-gray-400 mb-2">Buy-in (Kč)</label>
+          <div class="flex items-stretch bg-gray-700 rounded-lg overflow-hidden">
+            <button
+              @click="adjustBuyin(-50)"
+              class="w-12 flex items-center justify-center bg-gray-600 hover:bg-gray-500 text-xl font-bold transition-colors shrink-0"
+            >
+              &minus;
+            </button>
+            <input
+              v-model.number="store.buyinAmount"
+              type="number"
+              min="0"
+              step="50"
+              class="flex-1 min-w-0 px-2 py-2 bg-gray-700 text-white text-center font-medium focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+            />
+            <button
+              @click="adjustBuyin(50)"
+              class="w-12 flex items-center justify-center bg-gray-600 hover:bg-gray-500 text-xl font-bold transition-colors shrink-0"
+            >
+              +
+            </button>
+          </div>
         </div>
-      </div>
 
-      <!-- Buy-in -->
-      <div>
-        <label class="block text-sm text-gray-400 mb-2">Buy-in (Kč)</label>
-        <div class="flex items-stretch bg-gray-700 rounded-lg overflow-hidden">
-          <button
-            @click="adjustBuyin(-50)"
-            class="w-12 flex items-center justify-center bg-gray-600 hover:bg-gray-500 text-xl font-bold transition-colors"
-          >
-            &minus;
-          </button>
-          <input
-            v-model.number="store.buyinAmount"
-            type="number"
-            min="0"
-            step="50"
-            class="flex-1 px-3 py-2 bg-gray-700 text-white text-center font-medium focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-          />
-          <button
-            @click="adjustBuyin(50)"
-            class="w-12 flex items-center justify-center bg-gray-600 hover:bg-gray-500 text-xl font-bold transition-colors"
-          >
-            +
-          </button>
+        <!-- Bounty Amount -->
+        <div v-if="store.useBounty">
+          <label class="block text-sm text-gray-400 mb-2">Bounty (Kč)</label>
+          <div class="flex items-stretch bg-gray-700 rounded-lg overflow-hidden">
+            <button
+              @click="adjustBounty(-10)"
+              class="w-12 flex items-center justify-center bg-gray-600 hover:bg-gray-500 text-xl font-bold transition-colors shrink-0"
+            >
+              &minus;
+            </button>
+            <input
+              v-model.number="store.bountyAmount"
+              type="number"
+              min="0"
+              step="10"
+              class="flex-1 min-w-0 px-2 py-2 bg-gray-700 text-white text-center font-medium focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+            />
+            <button
+              @click="adjustBounty(10)"
+              class="w-12 flex items-center justify-center bg-gray-600 hover:bg-gray-500 text-xl font-bold transition-colors shrink-0"
+            >
+              +
+            </button>
+          </div>
         </div>
       </div>
 
@@ -186,6 +209,61 @@ function adjustBounty(amount: number) {
           >
             +
           </button>
+        </div>
+      </div>
+
+      <!-- Level & Break Duration -->
+      <div class="grid grid-cols-2 gap-3">
+        <!-- Level Duration -->
+        <div>
+          <label class="block text-sm text-gray-400 mb-2">Délka levelu (min)</label>
+          <div class="flex items-stretch bg-gray-700 rounded-lg overflow-hidden">
+            <button
+              @click="adjustLevelDuration(-60)"
+              class="w-12 flex items-center justify-center bg-gray-600 hover:bg-gray-500 text-xl font-bold transition-colors shrink-0"
+            >
+              &minus;
+            </button>
+            <input
+              :value="formatDuration(store.levelDuration)"
+              @input="setLevelDuration(Number(($event.target as HTMLInputElement).value))"
+              type="number"
+              min="1"
+              class="flex-1 min-w-0 px-2 py-2 bg-gray-700 text-white text-center font-medium focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+            />
+            <button
+              @click="adjustLevelDuration(60)"
+              class="w-12 flex items-center justify-center bg-gray-600 hover:bg-gray-500 text-xl font-bold transition-colors shrink-0"
+            >
+              +
+            </button>
+          </div>
+        </div>
+
+        <!-- Break Duration -->
+        <div>
+          <label class="block text-sm text-gray-400 mb-2">Délka pauzy (min)</label>
+          <div class="flex items-stretch bg-gray-700 rounded-lg overflow-hidden">
+            <button
+              @click="adjustBreakDuration(-60)"
+              class="w-12 flex items-center justify-center bg-gray-600 hover:bg-gray-500 text-xl font-bold transition-colors shrink-0"
+            >
+              &minus;
+            </button>
+            <input
+              :value="formatDuration(store.breakDuration)"
+              @input="setBreakDuration(Number(($event.target as HTMLInputElement).value))"
+              type="number"
+              min="1"
+              class="flex-1 min-w-0 px-2 py-2 bg-gray-700 text-white text-center font-medium focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+            />
+            <button
+              @click="adjustBreakDuration(60)"
+              class="w-12 flex items-center justify-center bg-gray-600 hover:bg-gray-500 text-xl font-bold transition-colors shrink-0"
+            >
+              +
+            </button>
+          </div>
         </div>
       </div>
 

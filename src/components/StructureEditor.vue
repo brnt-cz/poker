@@ -18,18 +18,17 @@ const editForm = ref({
   smallBlind: 0,
   bigBlind: 0,
   ante: 0,
-  duration: 20,
   isBreak: false,
 })
-
-function formatTime(seconds: number): string {
-  const mins = Math.floor(seconds / 60)
-  return `${mins} min`
-}
 
 function formatNumber(num: number): string {
   if (num >= 1000) return (num / 1000) + 'K'
   return num.toString()
+}
+
+function formatTime(seconds: number): string {
+  const mins = Math.floor(seconds / 60)
+  return `${mins} min`
 }
 
 function startEdit(index: number) {
@@ -39,7 +38,6 @@ function startEdit(index: number) {
     smallBlind: level.smallBlind,
     bigBlind: level.bigBlind,
     ante: level.ante,
-    duration: level.duration / 60,
     isBreak: level.isBreak || false,
   }
   editingLevel.value = index
@@ -53,11 +51,10 @@ function saveEdit() {
 
   const newStructure = [...store.structure]
   newStructure[editingLevel.value] = {
-    id: currentLevel.id,
+    ...currentLevel,
     smallBlind: editForm.value.smallBlind,
     bigBlind: editForm.value.bigBlind,
     ante: editForm.value.ante,
-    duration: editForm.value.duration * 60,
     isBreak: editForm.value.isBreak,
   }
   store.setStructure(newStructure)
@@ -80,18 +77,14 @@ function adjustAnte(amount: number) {
   editForm.value.ante = Math.max(0, editForm.value.ante + amount)
 }
 
-function adjustDuration(amount: number) {
-  editForm.value.duration = Math.max(1, editForm.value.duration + amount)
-}
-
 function addLevel() {
-  const lastLevel = store.structure[store.structure.length - 1]
+  const lastNonBreak = [...store.structure].reverse().find(l => !l.isBreak)
   const newLevel: BlindLevel = {
     id: store.structure.length + 1,
-    smallBlind: lastLevel ? Math.round(lastLevel.smallBlind * 1.5) : 25,
-    bigBlind: lastLevel ? Math.round(lastLevel.bigBlind * 1.5) : 50,
-    ante: lastLevel ? Math.round(lastLevel.ante * 1.5) : 0,
-    duration: 1200,
+    smallBlind: lastNonBreak ? Math.round(lastNonBreak.smallBlind * 1.5) : 25,
+    bigBlind: lastNonBreak ? Math.round(lastNonBreak.bigBlind * 1.5) : 50,
+    ante: lastNonBreak ? Math.round(lastNonBreak.ante * 1.5) : 0,
+    duration: 0, // Nepoužívá se, délka je globální
   }
   store.setStructure([...store.structure, newLevel])
 }
@@ -102,7 +95,7 @@ function addBreak() {
     smallBlind: 0,
     bigBlind: 0,
     ante: 0,
-    duration: 600,
+    duration: 0, // Nepoužívá se, délka je globální
     isBreak: true,
     breakMessage: 'Přestávka',
   }
@@ -201,12 +194,13 @@ async function resetStructure() {
               </div>
               <span class="text-gray-500 text-sm w-6">{{ index + 1 }}.</span>
               <div v-if="level.isBreak" class="text-green-400">
-                PŘESTÁVKA ({{ formatTime(level.duration) }})
+                PŘESTÁVKA
+                <span class="text-green-600 text-sm ml-1">({{ formatTime(store.breakDuration) }})</span>
               </div>
               <div v-else>
                 <span class="font-medium">{{ formatNumber(level.smallBlind) }}/{{ formatNumber(level.bigBlind) }}</span>
                 <span v-if="store.useAnte && level.ante" class="text-yellow-500 text-sm ml-2">A:{{ formatNumber(level.ante) }}</span>
-                <span class="text-gray-500 text-sm ml-2">({{ formatTime(level.duration) }})</span>
+                <span class="text-gray-500 text-sm ml-2">({{ formatTime(store.levelDuration) }})</span>
               </div>
             </div>
 
@@ -226,7 +220,7 @@ async function resetStructure() {
 
           <!-- Edit Mode -->
           <div v-else class="p-3 sm:p-4 bg-gray-700">
-            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3 mb-3 sm:mb-4" :class="{ 'sm:grid-cols-4': store.useAnte }">
+            <div class="grid grid-cols-2 gap-2 sm:gap-3 mb-3 sm:mb-4" :class="{ 'grid-cols-3': store.useAnte }">
               <!-- Small Blind -->
               <div>
                 <label class="block text-xs sm:text-sm text-gray-400 mb-1 text-center">SB</label>
@@ -252,15 +246,6 @@ async function resetStructure() {
                   <button @click="adjustAnte(-25)" class="w-8 sm:w-10 flex items-center justify-center bg-gray-500 hover:bg-gray-400 text-sm sm:text-base font-bold transition-colors">&minus;</button>
                   <input v-model.number="editForm.ante" type="number" class="w-full py-2 bg-gray-600 text-white text-center text-sm sm:text-base focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
                   <button @click="adjustAnte(25)" class="w-8 sm:w-10 flex items-center justify-center bg-gray-500 hover:bg-gray-400 text-sm sm:text-base font-bold transition-colors">+</button>
-                </div>
-              </div>
-              <!-- Délka -->
-              <div>
-                <label class="block text-xs sm:text-sm text-gray-400 mb-1 text-center">Čas</label>
-                <div class="flex items-stretch bg-gray-600 rounded-lg overflow-hidden">
-                  <button @click="adjustDuration(-5)" class="w-8 sm:w-10 flex items-center justify-center bg-gray-500 hover:bg-gray-400 text-sm sm:text-base font-bold transition-colors">&minus;</button>
-                  <input v-model.number="editForm.duration" type="number" class="w-full py-2 bg-gray-600 text-white text-center text-sm sm:text-base focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
-                  <button @click="adjustDuration(5)" class="w-8 sm:w-10 flex items-center justify-center bg-gray-500 hover:bg-gray-400 text-sm sm:text-base font-bold transition-colors">+</button>
                 </div>
               </div>
             </div>
