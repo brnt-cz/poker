@@ -1,9 +1,13 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useTournamentStore } from '@/stores/tournament'
+import { useCurrency } from '@/composables/useCurrency'
 import ConfirmDialog from './ConfirmDialog.vue'
 
 const store = useTournamentStore()
+const { t } = useI18n()
+const { format } = useCurrency()
 const newPlayerName = ref('')
 const confirmDialog = ref<InstanceType<typeof ConfirmDialog> | null>(null)
 
@@ -16,10 +20,10 @@ function addPlayer() {
 
 async function removePlayer(id: string, name: string) {
   const confirmed = await confirmDialog.value?.open({
-    title: 'Odebrat hráče',
-    message: `Opravdu chceš odebrat hráče "${name}"?`,
-    confirmText: 'Odebrat',
-    cancelText: 'Zrušit',
+    title: t('players.removeTitle'),
+    message: t('players.removeConfirm', { name }),
+    confirmText: t('common.remove'),
+    cancelText: t('common.cancel'),
     danger: true,
   })
   if (confirmed) {
@@ -79,7 +83,7 @@ const prizeDistribution = computed(() => {
       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
       </svg>
-      <span class="font-medium">Hráči</span>
+      <span class="font-medium">{{ $t('players.title') }}</span>
       <span class="text-gray-400 text-sm">({{ store.activePlayers }}/{{ store.totalPlayers }})</span>
     </div>
 
@@ -89,7 +93,7 @@ const prizeDistribution = computed(() => {
         <input
           v-model="newPlayerName"
           type="text"
-          placeholder="Jméno hráče"
+          :placeholder="$t('players.namePlaceholder')"
           class="flex-1 px-3 py-2 bg-gray-700 text-white placeholder-gray-400 rounded border border-gray-600 focus:border-primary-500 focus:outline-none"
         />
         <button
@@ -97,7 +101,7 @@ const prizeDistribution = computed(() => {
           :disabled="!newPlayerName.trim()"
           class="px-5 py-2 bg-green-700 hover:bg-green-600 active:bg-green-800 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg font-medium shadow-md hover:shadow-lg transition-all"
         >
-          Přidat
+          {{ $t('common.add') }}
         </button>
       </form>
     </div>
@@ -116,9 +120,9 @@ const prizeDistribution = computed(() => {
               {{ player.name }}
             </div>
             <div class="text-sm text-gray-400">
-              {{ formatNumber(player.stack) }} chips
+              {{ formatNumber(player.stack) }} {{ $t('players.chips') }}
               <span v-if="player.buyinCount > 1" class="text-yellow-500">
-                ({{ player.buyinCount }}x buyin)
+                ({{ $t('players.buyinCount', { count: player.buyinCount }) }})
               </span>
             </div>
           </div>
@@ -129,24 +133,24 @@ const prizeDistribution = computed(() => {
               v-if="!player.isBusted"
               @click="store.bustPlayer(player.id)"
               class="px-2 py-1 text-xs bg-red-700 hover:bg-red-600 rounded transition-colors"
-              title="Vyřadit"
+              :title="$t('players.bust')"
             >
-              Bust
+              {{ $t('players.bust') }}
             </button>
             <button
               v-else-if="canRebuy"
               @click="store.rebuyPlayer(player.id)"
               class="px-2 py-1 text-xs bg-green-700 hover:bg-green-600 rounded transition-colors"
-              title="Rebuy"
+              :title="$t('players.rebuy')"
             >
-              Rebuy
+              {{ $t('players.rebuy') }}
             </button>
 
             <!-- Remove -->
             <button
               @click="removePlayer(player.id, player.name)"
               class="p-1 text-gray-400 hover:text-red-500 transition-colors"
-              title="Odebrat hráče"
+              :title="$t('players.removeTitle')"
             >
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -157,7 +161,7 @@ const prizeDistribution = computed(() => {
 
         <!-- Empty State -->
         <div v-if="store.players.length === 0" class="p-4 text-center text-gray-500">
-          Žádní hráči
+          {{ $t('players.noPlayers') }}
         </div>
       </div>
 
@@ -167,7 +171,7 @@ const prizeDistribution = computed(() => {
           <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
-          <span>Výplaty ({{ formatNumber(store.prizePool) }} Kč)</span>
+          <span>{{ $t('payouts.title') }} ({{ format(store.prizePool, store.currency) }})</span>
         </div>
         <div v-if="prizeDistribution.length > 0" class="overflow-y-auto px-3 pb-3 space-y-1.5">
           <div
@@ -191,11 +195,11 @@ const prizeDistribution = computed(() => {
               <span v-if="prize.playerName" class="text-white font-medium">{{ prize.playerName }}</span>
               <span v-else class="text-gray-500">{{ prize.percentage }}%</span>
             </div>
-            <span class="text-white font-medium">{{ formatNumber(prize.amount) }} Kč</span>
+            <span class="text-white font-medium">{{ format(prize.amount, store.currency) }}</span>
           </div>
         </div>
         <div v-else class="px-3 pb-3 text-sm text-gray-500">
-          Min. 2 hráči pro výpočet
+          {{ $t('payouts.minPlayers') }}
         </div>
       </div>
     </div>

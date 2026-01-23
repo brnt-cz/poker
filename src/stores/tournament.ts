@@ -3,6 +3,8 @@ import { ref, computed, watch } from 'vue'
 import type { BlindLevel, Player, ChipDenomination } from '@/types/poker'
 import { defaultStructure, defaultChips } from '@/types/poker'
 import { useStorage } from '@/composables/useStorage'
+import { detectBrowserLanguage, type SupportedLocale } from '@/i18n'
+import { useCurrency, type CurrencyCode } from '@/composables/useCurrency'
 
 export const useTournamentStore = defineStore('tournament', () => {
   const storage = useStorage()
@@ -32,6 +34,9 @@ export const useTournamentStore = defineStore('tournament', () => {
   const chips = ref<ChipDenomination[]>(savedChips || [...defaultChips])
   // Track finish order - players who busted (last element = last to bust = 2nd place)
   const finishOrder = ref<{ id: string; name: string; position: number }[]>(savedState?.finishOrder ?? [])
+  // Language and currency
+  const language = ref<SupportedLocale>(savedSettings?.language ?? detectBrowserLanguage())
+  const currency = ref<CurrencyCode>(savedSettings?.currency ?? 'CZK')
 
   // Getters
   const currentLevel = computed(() => structure.value[currentLevelIndex.value])
@@ -97,7 +102,7 @@ export const useTournamentStore = defineStore('tournament', () => {
       }
     })
   })
-  watch([startingStack, buyinAmount, useAnte, allowRebuy, useBounty, bountyAmount, useBreaks, levelDuration, breakDuration], () => {
+  watch([startingStack, buyinAmount, useAnte, allowRebuy, useBounty, bountyAmount, useBreaks, levelDuration, breakDuration, language, currency], () => {
     storage.saveSettings({
       startingStack: startingStack.value,
       buyinAmount: buyinAmount.value,
@@ -108,6 +113,8 @@ export const useTournamentStore = defineStore('tournament', () => {
       useBreaks: useBreaks.value,
       levelDuration: levelDuration.value,
       breakDuration: breakDuration.value,
+      language: language.value,
+      currency: currency.value,
     })
   })
   watch([currentLevelIndex, remainingSeconds, isRunning, finishOrder], () => {
@@ -118,6 +125,13 @@ export const useTournamentStore = defineStore('tournament', () => {
       finishOrder: finishOrder.value,
     })
   }, { deep: true })
+
+  // Update buyin/bounty defaults when currency changes
+  const { getDefaultBuyin, getDefaultBounty } = useCurrency()
+  watch(currency, (newCurrency) => {
+    buyinAmount.value = getDefaultBuyin(newCurrency)
+    bountyAmount.value = getDefaultBounty(newCurrency)
+  })
 
   // Actions
   function initializeLevel() {
@@ -290,6 +304,8 @@ export const useTournamentStore = defineStore('tournament', () => {
     useBreaks.value = true
     levelDuration.value = 1200
     breakDuration.value = 600
+    language.value = detectBrowserLanguage()
+    currency.value = 'CZK'
     storage.clearAll()
     initializeLevel()
   }
@@ -321,6 +337,8 @@ export const useTournamentStore = defineStore('tournament', () => {
     breakDuration,
     chips,
     finishOrder,
+    language,
+    currency,
     // Getters
     currentLevel,
     nextLevel,

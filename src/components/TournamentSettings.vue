@@ -1,17 +1,21 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useTournamentStore } from '@/stores/tournament'
+import { useCurrency } from '@/composables/useCurrency'
 import ConfirmDialog from './ConfirmDialog.vue'
 
 const store = useTournamentStore()
+const { t } = useI18n()
+const { getBuyinStep, getBountyStep } = useCurrency()
 const confirmDialog = ref<InstanceType<typeof ConfirmDialog> | null>(null)
 
 async function resetAll() {
   const confirmed = await confirmDialog.value?.open({
-    title: 'Resetovat vše',
-    message: 'Opravdu chceš resetovat celý turnaj? Všichni hráči, nastavení a struktura budou smazány.',
-    confirmText: 'Resetovat',
-    cancelText: 'Zrušit',
+    title: t('resetAll.title'),
+    message: t('resetAll.confirm'),
+    confirmText: t('common.reset'),
+    cancelText: t('common.cancel'),
     danger: true,
   })
   if (confirmed) {
@@ -76,6 +80,9 @@ function formatChipValue(value: number): string {
   return value.toString()
 }
 
+const buyinStep = computed(() => getBuyinStep(store.currency))
+const bountyStep = computed(() => getBountyStep(store.currency))
+
 function adjustBuyin(amount: number) {
   store.buyinAmount = Math.max(0, store.buyinAmount + amount)
 }
@@ -118,14 +125,14 @@ function setBreakDuration(minutes: number) {
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
         </svg>
-        <span class="font-medium">Turnaj</span>
+        <span class="font-medium">{{ $t('settings.tournament') }}</span>
       </div>
       <button
         @click="resetAll"
         class="px-2 py-1 text-sm bg-red-800 hover:bg-red-700 rounded transition-colors"
-        title="Resetovat vše"
+        :title="$t('resetAll.title')"
       >
-        Reset
+        {{ $t('common.reset') }}
       </button>
     </div>
 
@@ -135,10 +142,10 @@ function setBreakDuration(minutes: number) {
       <div class="grid gap-3" :class="store.useBounty ? 'grid-cols-2' : 'grid-cols-1'">
         <!-- Buy-in -->
         <div>
-          <label class="block text-sm text-gray-400 mb-2">Buy-in (Kč)</label>
+          <label class="block text-sm text-gray-400 mb-2">{{ $t('settings.buyin') }}</label>
           <div class="flex items-stretch bg-gray-700 rounded-lg overflow-hidden">
             <button
-              @click="adjustBuyin(-50)"
+              @click="adjustBuyin(-buyinStep)"
               class="w-12 flex items-center justify-center bg-gray-600 hover:bg-gray-500 text-xl font-bold transition-colors shrink-0"
             >
               &minus;
@@ -147,11 +154,11 @@ function setBreakDuration(minutes: number) {
               v-model.number="store.buyinAmount"
               type="number"
               min="0"
-              step="50"
+              :step="buyinStep"
               class="flex-1 min-w-0 px-2 py-2 bg-gray-700 text-white text-center font-medium focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
             />
             <button
-              @click="adjustBuyin(50)"
+              @click="adjustBuyin(buyinStep)"
               class="w-12 flex items-center justify-center bg-gray-600 hover:bg-gray-500 text-xl font-bold transition-colors shrink-0"
             >
               +
@@ -161,10 +168,10 @@ function setBreakDuration(minutes: number) {
 
         <!-- Bounty Amount -->
         <div v-if="store.useBounty">
-          <label class="block text-sm text-gray-400 mb-2">Bounty (Kč)</label>
+          <label class="block text-sm text-gray-400 mb-2">{{ $t('settings.bounty') }}</label>
           <div class="flex items-stretch bg-gray-700 rounded-lg overflow-hidden">
             <button
-              @click="adjustBounty(-10)"
+              @click="adjustBounty(-bountyStep)"
               class="w-12 flex items-center justify-center bg-gray-600 hover:bg-gray-500 text-xl font-bold transition-colors shrink-0"
             >
               &minus;
@@ -173,11 +180,11 @@ function setBreakDuration(minutes: number) {
               v-model.number="store.bountyAmount"
               type="number"
               min="0"
-              step="10"
+              :step="bountyStep"
               class="flex-1 min-w-0 px-2 py-2 bg-gray-700 text-white text-center font-medium focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
             />
             <button
-              @click="adjustBounty(10)"
+              @click="adjustBounty(bountyStep)"
               class="w-12 flex items-center justify-center bg-gray-600 hover:bg-gray-500 text-xl font-bold transition-colors shrink-0"
             >
               +
@@ -188,7 +195,7 @@ function setBreakDuration(minutes: number) {
 
       <!-- Starting Stack -->
       <div>
-        <label class="block text-sm text-gray-400 mb-2">Startovací stack</label>
+        <label class="block text-sm text-gray-400 mb-2">{{ $t('settings.startingStack') }}</label>
         <div class="flex items-stretch bg-gray-700 rounded-lg overflow-hidden">
           <button
             @click="adjustStack(-1000)"
@@ -216,7 +223,7 @@ function setBreakDuration(minutes: number) {
       <div class="grid grid-cols-2 gap-3">
         <!-- Level Duration -->
         <div>
-          <label class="block text-sm text-gray-400 mb-2">Délka levelu (min)</label>
+          <label class="block text-sm text-gray-400 mb-2">{{ $t('settings.levelDuration') }}</label>
           <div class="flex items-stretch bg-gray-700 rounded-lg overflow-hidden">
             <button
               @click="adjustLevelDuration(-60)"
@@ -242,7 +249,7 @@ function setBreakDuration(minutes: number) {
 
         <!-- Break Duration -->
         <div>
-          <label class="block text-sm text-gray-400 mb-2">Délka pauzy (min)</label>
+          <label class="block text-sm text-gray-400 mb-2">{{ $t('settings.breakDuration') }}</label>
           <div class="flex items-stretch bg-gray-700 rounded-lg overflow-hidden">
             <button
               @click="adjustBreakDuration(-60)"
@@ -279,7 +286,7 @@ function setBreakDuration(minutes: number) {
             />
             <div class="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-600"></div>
           </div>
-          <span class="text-sm text-gray-300">Ante</span>
+          <span class="text-sm text-gray-300">{{ $t('settings.ante') }}</span>
         </label>
 
         <!-- Allow Rebuy -->
@@ -292,10 +299,9 @@ function setBreakDuration(minutes: number) {
             />
             <div class="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-600"></div>
           </div>
-          <span class="text-sm text-gray-300">Rebuy</span>
+          <span class="text-sm text-gray-300">{{ $t('settings.rebuy') }}</span>
         </label>
 
-        <!-- Bounty -->
         <!-- Bounty -->
         <label class="flex items-center gap-2 cursor-pointer">
           <div class="relative inline-flex items-center">
@@ -306,7 +312,7 @@ function setBreakDuration(minutes: number) {
             />
             <div class="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-600"></div>
           </div>
-          <span class="text-sm text-gray-300">Bounty</span>
+          <span class="text-sm text-gray-300">{{ $t('settings.bounty') }}</span>
         </label>
       </div>
 
@@ -321,7 +327,7 @@ function setBreakDuration(minutes: number) {
             <line x1="3" y1="12" x2="7" y2="12" />
             <line x1="17" y1="12" x2="21" y2="12" />
           </svg>
-          <span>Rozložení žetonů</span>
+          <span>{{ $t('settings.chipBreakdown') }}</span>
         </div>
         <div class="space-y-2">
           <div
@@ -347,7 +353,7 @@ function setBreakDuration(minutes: number) {
 
         <!-- Total -->
         <div class="flex items-center justify-between mt-3 pt-3 border-t border-gray-600">
-          <span class="text-gray-400">Celkem</span>
+          <span class="text-gray-400">{{ $t('settings.total') }}</span>
           <span class="text-white font-bold">{{ formatNumber(totalFromBreakdown) }}</span>
         </div>
       </div>

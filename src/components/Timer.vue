@@ -22,7 +22,7 @@ const timeClass = computed(() => {
       {{ store.formattedTime }}
     </div>
     <div class="mt-1 sm:mt-2 text-base lg:text-2xl text-gray-400">
-      Level {{ store.currentLevelIndex + 1 }} / {{ store.totalLevels }}
+      {{ $t('timer.level') }} {{ store.currentLevelIndex + 1 }} / {{ store.totalLevels }}
     </div>
   </div>
 </template>

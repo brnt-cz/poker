@@ -1,15 +1,23 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import PlayerManager from './PlayerManager.vue'
 import ChipSettings from './ChipSettings.vue'
 import TournamentSettings from './TournamentSettings.vue'
 import StructureEditor from './StructureEditor.vue'
 import { useNotifications } from '@/composables/useNotifications'
+import { useTournamentStore } from '@/stores/tournament'
+import i18n from '@/i18n'
 
 const isOpen = ref(false)
 const showDebug = ref(false)
 const debugEnabled = ref(localStorage.getItem('pokerDebug') === 'true')
 const notifications = useNotifications()
+const store = useTournamentStore()
+
+// Sync language changes with i18n
+watch(() => store.language, (newLang) => {
+  i18n.global.locale.value = newLang
+})
 
 function toggle() {
   isOpen.value = !isOpen.value
@@ -25,7 +33,7 @@ function close() {
   <button
     @click="toggle"
     class="p-2 rounded-lg bg-gray-700 hover:bg-gray-600 transition-colors"
-    title="Nastavení"
+    :title="$t('settings.title')"
   >
     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
@@ -51,15 +59,35 @@ function close() {
       >
         <!-- Header -->
         <div class="flex items-center justify-between p-3 sm:p-4 border-b border-gray-700 shrink-0">
-          <h2 class="text-lg sm:text-xl font-bold">Nastavení</h2>
-          <button
-            @click="close"
-            class="p-2 hover:bg-gray-700 rounded-lg transition-colors"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
+          <h2 class="text-lg sm:text-xl font-bold">{{ $t('settings.title') }}</h2>
+          <div class="flex items-center gap-2">
+            <!-- Language -->
+            <select
+              v-model="store.language"
+              class="px-2 py-1.5 bg-gray-700 text-white text-sm rounded border border-gray-600 focus:border-primary-500 focus:outline-none cursor-pointer"
+            >
+              <option value="cs">CZ</option>
+              <option value="en">EN</option>
+            </select>
+            <!-- Currency -->
+            <select
+              v-model="store.currency"
+              class="px-2 py-1.5 bg-gray-700 text-white text-sm rounded border border-gray-600 focus:border-primary-500 focus:outline-none cursor-pointer"
+            >
+              <option value="CZK">Kč</option>
+              <option value="EUR">€</option>
+              <option value="USD">$</option>
+            </select>
+            <!-- Close button -->
+            <button
+              @click="close"
+              class="p-2 hover:bg-gray-700 rounded-lg transition-colors"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
         </div>
 
         <!-- Content -->
@@ -81,7 +109,7 @@ function close() {
               @click="showDebug = !showDebug"
               class="text-sm text-gray-500 hover:text-gray-300"
             >
-              {{ showDebug ? '▼' : '▶' }} Debug zvuků
+              {{ showDebug ? '▼' : '▶' }} {{ $t('debug.title') }}
             </button>
             <div v-if="showDebug" class="mt-2 flex flex-wrap gap-2">
               <button
