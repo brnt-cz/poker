@@ -16,6 +16,8 @@ interface StoredSettings {
   useBounty?: boolean
   bountyAmount?: number
   useBreaks?: boolean
+  levelDuration?: number
+  breakDuration?: number
 }
 
 interface StoredState {

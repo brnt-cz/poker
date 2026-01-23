@@ -8,7 +8,11 @@ Turnajový časovač pro domácí pokerové turnaje. Optimalizováno pro mobily 
 - Odpočítávací časovač s nastavitelnou strukturou blindů
 - Zobrazení aktuálních a následujících blindů (SB/BB/Ante)
 - Ovládání: Start/Pause, předchozí/další level, úprava času (+/- 10s, 1min)
-- Zvuková upozornění na konec levelu (Web Audio API)
+- Zvuková upozornění (Web Audio API):
+  - Varování 1 minutu před koncem levelu
+  - Odpočet posledních 5 sekund
+  - Oznámení konce levelu
+  - Ambientní zvuk pro přestávku
 - Vibrace na mobilech
 - Wake Lock - obrazovka nezhasne během hry
 
@@ -23,6 +27,8 @@ Turnajový časovač pro domácí pokerové turnaje. Optimalizováno pro mobily 
 ### Nastavení turnaje
 - Výše buy-inu (výchozí 100 Kč)
 - Startovací stack (výchozí 10 000 žetonů)
+- Délka levelu (výchozí 20 minut)
+- Délka přestávky (výchozí 10 minut)
 - Přepínač ante
 - Přepínač rebuy
 - Přepínač bounty s nastavitelnou částkou
@@ -35,6 +41,7 @@ Turnajový časovač pro domácí pokerové turnaje. Optimalizováno pro mobily 
 
 ### Struktura blindů
 - Editovatelné levely s +/- ovládáním
+- Globální nastavení délky levelů a přestávek
 - Drag & drop pro změnu pořadí levelů
 - Přidání/odebrání levelů a přestávek
 - Přepínač přestávek
@@ -129,6 +136,8 @@ Začíná na 5/10, přestávky každé 3 levely.
 ### Výchozí nastavení turnaje
 - Buy-in: 100 Kč
 - Startovací stack: 10 000
+- Délka levelu: 20 minut
+- Délka přestávky: 10 minut
 - Bounty: 50 Kč
 - Ante: zapnuto
 - Rebuy: zapnuto (pouze první hodinu)
