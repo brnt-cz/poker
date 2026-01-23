@@ -1,6 +1,7 @@
 # Poker Timer
 
 Turnajový časovač pro domácí pokerové turnaje. Optimalizováno pro mobily s podporou PWA a Wake Lock API.
+Produkční verze aktuálně běží na https://brnt.cz/poker
 
 ## Funkce
 
