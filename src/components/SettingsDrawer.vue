@@ -4,8 +4,12 @@ import PlayerManager from './PlayerManager.vue'
 import ChipSettings from './ChipSettings.vue'
 import TournamentSettings from './TournamentSettings.vue'
 import StructureEditor from './StructureEditor.vue'
+import { useNotifications } from '@/composables/useNotifications'
 
 const isOpen = ref(false)
+const showDebug = ref(false)
+const debugEnabled = ref(localStorage.getItem('pokerDebug') === 'true')
+const notifications = useNotifications()
 
 function toggle() {
   isOpen.value = !isOpen.value
@@ -69,6 +73,42 @@ function close() {
             </div>
             <!-- 1/3: Structure -->
             <StructureEditor class="min-h-[320px] lg:min-h-0 lg:max-h-full" />
+          </div>
+
+          <!-- Debug zvuků (zapnout: localStorage.setItem('pokerDebug', 'true')) -->
+          <div v-if="debugEnabled" class="mt-4 pt-4 border-t border-gray-700">
+            <button
+              @click="showDebug = !showDebug"
+              class="text-sm text-gray-500 hover:text-gray-300"
+            >
+              {{ showDebug ? '▼' : '▶' }} Debug zvuků
+            </button>
+            <div v-if="showDebug" class="mt-2 flex flex-wrap gap-2">
+              <button
+                @click="notifications.notifyWarning()"
+                class="px-3 py-1.5 text-sm bg-yellow-600 hover:bg-yellow-500 rounded"
+              >
+                Warning (1 min)
+              </button>
+              <button
+                @click="notifications.notifyCountdown()"
+                class="px-3 py-1.5 text-sm bg-blue-600 hover:bg-blue-500 rounded"
+              >
+                Countdown
+              </button>
+              <button
+                @click="notifications.notifyBreak()"
+                class="px-3 py-1.5 text-sm bg-green-600 hover:bg-green-500 rounded"
+              >
+                Break
+              </button>
+              <button
+                @click="notifications.notifyLevelEnd()"
+                class="px-3 py-1.5 text-sm bg-red-600 hover:bg-red-500 rounded"
+              >
+                Level End
+              </button>
+            </div>
           </div>
         </div>
       </div>

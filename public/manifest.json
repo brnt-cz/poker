@@ -1,0 +1,28 @@
+{
+  "name": "Poker Timer",
+  "short_name": "Poker Timer",
+  "description": "Poker Timer Aplikace",
+  "start_url": "/poker/",
+  "display": "standalone",
+  "background_color": "#1a1a2e",
+  "theme_color": "#16a34a",
+  "icons": [
+    {
+      "src": "/poker/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/poker/logo192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/poker/logo512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
