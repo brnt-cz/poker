@@ -1,19 +1,21 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useTournamentStore } from '@/stores/tournament'
 import ConfirmDialog from './ConfirmDialog.vue'
 
 const store = useTournamentStore()
+const { t } = useI18n()
 const editingChipId = ref<string | null>(null)
 const dropdownPosition = ref({ top: 0, left: 0 })
 const confirmDialog = ref<InstanceType<typeof ConfirmDialog> | null>(null)
 
 async function removeChip(id: string, label: string) {
   const confirmed = await confirmDialog.value?.open({
-    title: 'Odebrat žeton',
-    message: `Opravdu chceš odebrat žeton "${label}"?`,
-    confirmText: 'Odebrat',
-    cancelText: 'Zrušit',
+    title: t('chips.removeTitle'),
+    message: t('chips.removeConfirm', { label }),
+    confirmText: t('common.remove'),
+    cancelText: t('common.cancel'),
     danger: true,
   })
   if (confirmed) {
@@ -23,10 +25,10 @@ async function removeChip(id: string, label: string) {
 
 async function resetChips() {
   const confirmed = await confirmDialog.value?.open({
-    title: 'Obnovit výchozí žetony',
-    message: 'Opravdu chceš obnovit výchozí nastavení žetonů?',
-    confirmText: 'Obnovit',
-    cancelText: 'Zrušit',
+    title: t('chips.restoreTitle'),
+    message: t('chips.restoreConfirm'),
+    confirmText: t('common.restore'),
+    cancelText: t('common.cancel'),
     danger: true,
   })
   if (confirmed) {
@@ -52,20 +54,20 @@ function stopEditChip() {
   editingChipId.value = null
 }
 
-const availableColors = [
-  { value: '#ffffff', label: 'Bílá' },
-  { value: '#ef4444', label: 'Červená' },
-  { value: '#3b82f6', label: 'Modrá' },
-  { value: '#16a34a', label: 'Zelená' },
-  { value: '#181a1c', label: 'Černá' },
-  { value: '#9333ea', label: 'Fialová' },
-  { value: '#eab308', label: 'Žlutá' },
-  { value: '#f97316', label: 'Oranžová' },
-  { value: '#ec4899', label: 'Růžová' },
-  { value: '#6b7280', label: 'Šedá' },
-  { value: '#06b6d4', label: 'Tyrkysová' },
-  { value: '#92400e', label: 'Hnědá' },
-]
+const availableColors = computed(() => [
+  { value: '#ffffff', label: t('colors.white') },
+  { value: '#ef4444', label: t('colors.red') },
+  { value: '#3b82f6', label: t('colors.blue') },
+  { value: '#16a34a', label: t('colors.green') },
+  { value: '#181a1c', label: t('colors.black') },
+  { value: '#9333ea', label: t('colors.purple') },
+  { value: '#eab308', label: t('colors.yellow') },
+  { value: '#f97316', label: t('colors.orange') },
+  { value: '#ec4899', label: t('colors.pink') },
+  { value: '#6b7280', label: t('colors.gray') },
+  { value: '#06b6d4', label: t('colors.turquoise') },
+  { value: '#92400e', label: t('colors.brown') },
+])
 </script>
 
 <template>
@@ -81,22 +83,22 @@ const availableColors = [
           <line x1="3" y1="12" x2="7" y2="12" />
           <line x1="17" y1="12" x2="21" y2="12" />
         </svg>
-        <span class="font-medium">Žetony</span>
+        <span class="font-medium">{{ $t('chips.title') }}</span>
       </div>
       <div class="flex gap-1">
         <button
           @click="store.addChip"
           class="px-2 py-1 text-sm bg-gray-700 hover:bg-gray-600 text-bold rounded transition-colors"
-          title="Přidat žeton"
+          :title="$t('chips.addChip')"
         >
           +
         </button>
         <button
           @click="resetChips"
           class="px-2 py-1 text-sm bg-red-800 hover:bg-red-700 rounded transition-colors"
-          title="Obnovit výchozí"
+          :title="$t('chips.restoreDefault')"
         >
-          Reset
+          {{ $t('common.reset') }}
         </button>
       </div>
     </div>
@@ -132,7 +134,7 @@ const availableColors = [
           <button
             @click="removeChip(chip.id, chip.label)"
             class="p-1 text-gray-500 hover:text-red-500 transition-colors ml-auto"
-            title="Odebrat"
+            :title="$t('common.remove')"
           >
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />

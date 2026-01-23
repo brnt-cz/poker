@@ -1,4 +1,6 @@
 import type { BlindLevel, Player, ChipDenomination } from '@/types/poker'
+import type { CurrencyCode } from './useCurrency'
+import type { SupportedLocale } from '@/i18n'
 
 const STORAGE_KEYS = {
   STRUCTURE: 'poker-timer-structure',
@@ -18,6 +20,8 @@ interface StoredSettings {
   useBreaks?: boolean
   levelDuration?: number
   breakDuration?: number
+  language?: SupportedLocale
+  currency?: CurrencyCode
 }
 
 interface StoredState {

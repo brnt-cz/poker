@@ -13,7 +13,7 @@ const store = useTournamentStore()
         @click="store.goToPreviousLevel"
         :disabled="store.currentLevelIndex === 0"
         class="p-3 lg:p-4 rounded-full bg-gray-700 hover:bg-gray-600 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-        title="Předchozí level"
+        :title="$t('controls.prevLevel')"
       >
         <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 lg:h-8 lg:w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
@@ -24,7 +24,7 @@ const store = useTournamentStore()
       <button
         @click="store.toggle"
         class="p-6 lg:p-8 rounded-full bg-green-600 hover:bg-green-500 transition-colors"
-        :title="store.isRunning ? 'Pauza' : 'Start'"
+        :title="store.isRunning ? $t('controls.pause') : $t('controls.start')"
       >
         <!-- Play Icon (rounded triangle) -->
         <svg v-if="!store.isRunning" xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 lg:h-14 lg:w-14" viewBox="0 0 24 24" fill="currentColor">
@@ -41,7 +41,7 @@ const store = useTournamentStore()
         @click="store.goToNextLevel"
         :disabled="store.currentLevelIndex >= store.totalLevels - 1"
         class="p-3 lg:p-4 rounded-full bg-gray-700 hover:bg-gray-600 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-        title="Další level"
+        :title="$t('controls.nextLevel')"
       >
         <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 lg:h-8 lg:w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />

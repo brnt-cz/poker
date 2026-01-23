@@ -35,6 +35,21 @@ Produkční verze aktuálně běží na https://brnt.cz/poker
 - Přepínač bounty s nastavitelnou částkou
 - Přepínač přestávek
 
+### Internacionalizace (i18n)
+- Podpora jazyků: Čeština (CS), Angličtina (EN)
+- Automatická detekce jazyka prohlížeče
+- Přepínač jazyka v nastavení turnaje
+- Všechny texty UI přeloženy
+
+### Měny
+- Podporované měny: CZK, EUR, USD
+- Správné formátování (CZK: suffix "Kč", EUR/USD: prefix €/$)
+- Automatický přepočet buy-in/bounty při změně měny na výchozí hodnoty
+- Dynamické kroky pro buy-in/bounty podle měny:
+  - CZK: +/- 10 Kč (buy-in), +/- 5 Kč (bounty)
+  - EUR/USD: +/- 5 (buy-in), +/- 1 (bounty)
+- Přepínač měny v nastavení turnaje
+
 ### Správa žetonů
 - Nastavitelné hodnoty a barvy žetonů
 - 12 barevných možností
@@ -75,6 +90,7 @@ Produkční verze aktuálně běží na https://brnt.cz/poker
 - Pinia (state management)
 - Tailwind CSS 4
 - VueUse
+- vue-i18n (internacionalizace)
 
 ## Instalace
 
@@ -118,7 +134,12 @@ src/
 │   ├── useTimer.ts            # Logika časovače
 │   ├── useWakeLock.ts         # Screen Wake Lock API
 │   ├── useNotifications.ts    # Zvuky a vibrace
-│   └── useStorage.ts          # Persistence do localStorage
+│   ├── useStorage.ts          # Persistence do localStorage
+│   └── useCurrency.ts         # Formátování měn (CZK/EUR/USD)
+├── i18n/
+│   ├── index.ts               # Konfigurace vue-i18n
+│   ├── cs.ts                  # České překlady
+│   └── en.ts                  # Anglické překlady
 ├── stores/
 │   └── tournament.ts          # Pinia store
 ├── types/
@@ -143,6 +164,8 @@ Začíná na 5/10, přestávky každé 3 levely.
 - Ante: zapnuto
 - Rebuy: zapnuto (pouze první hodinu)
 - Přestávky: zapnuto
+- Jazyk: automatická detekce (CS fallback)
+- Měna: CZK
 
 ## Licence
 

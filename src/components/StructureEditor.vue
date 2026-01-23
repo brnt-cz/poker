@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useTournamentStore } from '@/stores/tournament'
 import type { BlindLevel } from '@/types/poker'
 import ConfirmDialog from './ConfirmDialog.vue'
 import draggable from 'vuedraggable'
 
 const store = useTournamentStore()
+const { t } = useI18n()
 
 const structureList = computed({
   get: () => store.structure,
@@ -97,20 +99,20 @@ function addBreak() {
     ante: 0,
     duration: 0, // Nepoužívá se, délka je globální
     isBreak: true,
-    breakMessage: 'Přestávka',
+    breakMessage: t('timer.break'),
   }
   store.setStructure([...store.structure, newBreak])
 }
 
 async function removeLevel(index: number) {
   const level = store.structure[index]
-  const levelName = level?.isBreak ? 'přestávku' : `level ${index + 1}`
+  const levelName = level?.isBreak ? t('structure.removeBreak') : `level ${index + 1}`
 
   const confirmed = await confirmDialog.value?.open({
-    title: 'Odebrat level',
-    message: `Opravdu chceš odebrat ${levelName}?`,
-    confirmText: 'Odebrat',
-    cancelText: 'Zrušit',
+    title: t('structure.removeLevel'),
+    message: `${t('structure.removeLevel')} ${levelName}?`,
+    confirmText: t('common.remove'),
+    cancelText: t('common.cancel'),
     danger: true,
   })
   if (confirmed) {
@@ -121,10 +123,10 @@ async function removeLevel(index: number) {
 
 async function resetStructure() {
   const confirmed = await confirmDialog.value?.open({
-    title: 'Obnovit výchozí strukturu',
-    message: 'Opravdu chceš obnovit výchozí strukturu blindů? Všechny úpravy budou ztraceny.',
-    confirmText: 'Obnovit',
-    cancelText: 'Zrušit',
+    title: t('structure.resetTitle'),
+    message: t('structure.resetConfirm'),
+    confirmText: t('common.restore'),
+    cancelText: t('common.cancel'),
     danger: true,
   })
   if (confirmed) {
@@ -141,11 +143,11 @@ async function resetStructure() {
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
         </svg>
-        <span class="font-medium">Blindy</span>
+        <span class="font-medium">{{ $t('structure.title') }}</span>
         <span class="text-gray-400">({{ store.structure.length }})</span>
       </div>
       <div class="flex items-center gap-3">
-        <label class="flex items-center gap-2 cursor-pointer" title="Přestávky">
+        <label class="flex items-center gap-2 cursor-pointer" :title="$t('blinds.breaks')">
           <div class="relative inline-flex items-center">
             <input
               type="checkbox"
@@ -154,14 +156,14 @@ async function resetStructure() {
             />
             <div class="w-9 h-5 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-green-600"></div>
           </div>
-          <span class="text-sm text-white">Přestávky</span>
+          <span class="text-sm text-white">{{ $t('blinds.breaks') }}</span>
         </label>
         <button
           @click="resetStructure"
           class="px-2 py-1 text-sm bg-red-800 hover:bg-red-700 rounded transition-colors"
-          title="Obnovit výchozí"
+          :title="$t('common.restore')"
         >
-          Reset
+          {{ $t('common.reset') }}
         </button>
       </div>
     </div>
@@ -194,7 +196,7 @@ async function resetStructure() {
               </div>
               <span class="text-gray-500 text-sm w-6">{{ index + 1 }}.</span>
               <div v-if="level.isBreak" class="text-green-400">
-                PŘESTÁVKA
+                {{ $t('timer.break') }}
                 <span class="text-green-600 text-sm ml-1">({{ formatTime(store.breakDuration) }})</span>
               </div>
               <div v-else>
@@ -223,7 +225,7 @@ async function resetStructure() {
             <div class="grid grid-cols-2 gap-2 sm:gap-3 mb-3 sm:mb-4" :class="{ 'grid-cols-3': store.useAnte }">
               <!-- Small Blind -->
               <div>
-                <label class="block text-xs sm:text-sm text-gray-400 mb-1 text-center">SB</label>
+                <label class="block text-xs sm:text-sm text-gray-400 mb-1 text-center">{{ $t('blinds.sb') }}</label>
                 <div class="flex items-stretch bg-gray-600 rounded-lg overflow-hidden">
                   <button @click="adjustSmallBlind(-25)" class="w-8 sm:w-10 flex items-center justify-center bg-gray-500 hover:bg-gray-400 text-sm sm:text-base font-bold transition-colors">&minus;</button>
                   <input v-model.number="editForm.smallBlind" type="number" class="w-full py-2 bg-gray-600 text-white text-center text-sm sm:text-base focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
@@ -232,7 +234,7 @@ async function resetStructure() {
               </div>
               <!-- Big Blind -->
               <div>
-                <label class="block text-xs sm:text-sm text-gray-400 mb-1 text-center">BB</label>
+                <label class="block text-xs sm:text-sm text-gray-400 mb-1 text-center">{{ $t('blinds.bb') }}</label>
                 <div class="flex items-stretch bg-gray-600 rounded-lg overflow-hidden">
                   <button @click="adjustBigBlind(-50)" class="w-8 sm:w-10 flex items-center justify-center bg-gray-500 hover:bg-gray-400 text-sm sm:text-base font-bold transition-colors">&minus;</button>
                   <input v-model.number="editForm.bigBlind" type="number" class="w-full py-2 bg-gray-600 text-white text-center text-sm sm:text-base focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
@@ -241,7 +243,7 @@ async function resetStructure() {
               </div>
               <!-- Ante -->
               <div v-if="store.useAnte">
-                <label class="block text-xs sm:text-sm text-gray-400 mb-1 text-center">Ante</label>
+                <label class="block text-xs sm:text-sm text-gray-400 mb-1 text-center">{{ $t('blinds.ante') }}</label>
                 <div class="flex items-stretch bg-gray-600 rounded-lg overflow-hidden">
                   <button @click="adjustAnte(-25)" class="w-8 sm:w-10 flex items-center justify-center bg-gray-500 hover:bg-gray-400 text-sm sm:text-base font-bold transition-colors">&minus;</button>
                   <input v-model.number="editForm.ante" type="number" class="w-full py-2 bg-gray-600 text-white text-center text-sm sm:text-base focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
@@ -250,8 +252,8 @@ async function resetStructure() {
               </div>
             </div>
             <div class="flex justify-end gap-2 sm:gap-3">
-              <button @click="cancelEdit" class="px-4 sm:px-5 py-2 bg-gray-600 hover:bg-gray-500 active:bg-gray-700 rounded-lg text-sm sm:text-base font-medium shadow-md hover:shadow-lg transition-all">Zrušit</button>
-              <button @click="saveEdit" class="px-4 sm:px-5 py-2 bg-green-700 hover:bg-green-600 active:bg-green-800 rounded-lg text-sm sm:text-base font-medium shadow-md hover:shadow-lg transition-all">Uložit</button>
+              <button @click="cancelEdit" class="px-4 sm:px-5 py-2 bg-gray-600 hover:bg-gray-500 active:bg-gray-700 rounded-lg text-sm sm:text-base font-medium shadow-md hover:shadow-lg transition-all">{{ $t('common.cancel') }}</button>
+              <button @click="saveEdit" class="px-4 sm:px-5 py-2 bg-green-700 hover:bg-green-600 active:bg-green-800 rounded-lg text-sm sm:text-base font-medium shadow-md hover:shadow-lg transition-all">{{ $t('common.save') }}</button>
             </div>
           </div>
         </div>
@@ -261,10 +263,10 @@ async function resetStructure() {
     <!-- Actions -->
     <div class="p-3 border-t border-gray-700 flex gap-2">
       <button @click="addLevel" class="flex-1 px-3 py-2 text-sm bg-gray-700 hover:bg-gray-600 rounded transition-colors">
-        + Level
+        {{ $t('blinds.addLevel') }}
       </button>
       <button @click="addBreak" class="flex-1 px-3 py-2 text-sm bg-green-800 hover:bg-green-700 rounded transition-colors">
-        + Přestávka
+        {{ $t('blinds.addBreak') }}
       </button>
     </div>
 

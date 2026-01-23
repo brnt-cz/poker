@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 export interface ConfirmOptions {
   title?: string
@@ -11,10 +14,10 @@ export interface ConfirmOptions {
 
 const isOpen = ref(false)
 const options = ref<ConfirmOptions>({
-  title: 'Potvrzení',
+  title: '',
   message: '',
-  confirmText: 'Potvrdit',
-  cancelText: 'Zrušit',
+  confirmText: '',
+  cancelText: '',
   danger: false,
 })
 
@@ -22,10 +25,10 @@ let resolvePromise: ((value: boolean) => void) | null = null
 
 function open(opts: ConfirmOptions): Promise<boolean> {
   options.value = {
-    title: opts.title ?? 'Potvrzení',
+    title: opts.title ?? t('common.confirm'),
     message: opts.message,
-    confirmText: opts.confirmText ?? 'Potvrdit',
-    cancelText: opts.cancelText ?? 'Zrušit',
+    confirmText: opts.confirmText ?? t('common.confirm'),
+    cancelText: opts.cancelText ?? t('common.cancel'),
     danger: opts.danger ?? false,
   }
   isOpen.value = true
