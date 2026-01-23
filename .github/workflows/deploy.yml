@@ -33,5 +33,5 @@ jobs:
           REMOTE_USER: ${{ secrets.REMOTE_USER }}
           SOURCE: "dist/"
           TARGET: "/www/poker/"
-          ARGS: "-avz --delete --omit-dir-times"
+          ARGS: "-rltz --delete --omit-dir-times"
           REMOTE_PORT: 53022
