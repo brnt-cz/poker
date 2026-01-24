@@ -23,32 +23,72 @@ async function resetAll() {
   }
 }
 
-// Calculate optimal chip distribution
+// Calculate optimal chip distribution based on blind structure
 const chipBreakdown = computed(() => {
   const stack = store.startingStack
   const sortedChips = [...store.chips].sort((a, b) => a.value - b.value)
   const breakdown: { id: string; value: number; count: number; color: string; label: string }[] = []
 
+  // Get early blind levels (first 3 non-break levels)
+  const earlyBlinds = store.structure
+    .filter(l => !l.isBreak)
+    .slice(0, 3)
+    .flatMap(l => [l.smallBlind, l.bigBlind, l.ante])
+    .filter(v => v > 0)
+
+  // Find which chip denominations are needed for early blinds
+  const neededDenominations = new Set<number>()
+  for (const blind of earlyBlinds) {
+    for (const chip of sortedChips) {
+      if (blind % chip.value === 0 || chip.value <= blind) {
+        neededDenominations.add(chip.value)
+      }
+    }
+  }
+
   let remaining = stack
   const distributions: Record<string, number> = {}
 
-  // Give minimum chips to lower denominations
-  const chipCount = sortedChips.length
-  for (let i = 0; i < chipCount - 1; i++) {
+  // Ensure enough small chips for early game (10+ rounds of blinds)
+  // Give more chips to smaller denominations needed for blinds
+  for (let i = 0; i < sortedChips.length; i++) {
     const chip = sortedChips[i]
     if (!chip) continue
-    const minCount = Math.min(8, Math.floor(remaining * 0.1 / chip.value))
-    distributions[chip.id] = minCount
-    remaining -= minCount * chip.value
+
+    let minCount = 0
+    if (i === 0) {
+      // Smallest denomination: 10-12 chips for SB payments
+      minCount = 12
+    } else if (i === 1) {
+      // Second smallest: 8-10 chips
+      minCount = 10
+    } else if (i === 2) {
+      // Third smallest: 6-8 chips
+      minCount = 8
+    } else if (neededDenominations.has(chip.value)) {
+      // Other denominations needed for blinds: 4-6 chips
+      minCount = 4
+    }
+
+    // Don't exceed what we can afford
+    const maxAffordable = Math.floor(remaining / chip.value)
+    const count = Math.min(minCount, maxAffordable)
+
+    if (count > 0) {
+      distributions[chip.id] = count
+      remaining -= count * chip.value
+    }
   }
 
   // Fill rest with highest denominations first
-  for (let i = chipCount - 1; i >= 0; i--) {
+  for (let i = sortedChips.length - 1; i >= 0; i--) {
     const chip = sortedChips[i]
     if (!chip) continue
     const additionalCount = Math.floor(remaining / chip.value)
-    distributions[chip.id] = (distributions[chip.id] || 0) + additionalCount
-    remaining -= additionalCount * chip.value
+    if (additionalCount > 0) {
+      distributions[chip.id] = (distributions[chip.id] || 0) + additionalCount
+      remaining -= additionalCount * chip.value
+    }
   }
 
   for (const chip of sortedChips) {
