@@ -34,9 +34,21 @@ export const useTournamentStore = defineStore('tournament', () => {
   const chips = ref<ChipDenomination[]>(savedChips || [...defaultChips])
   // Track finish order - players who busted (last element = last to bust = 2nd place)
   const finishOrder = ref<{ id: string; name: string; position: number }[]>(savedState?.finishOrder ?? [])
+  // Fallback timestamp - when the level should end (used for recovery if timer fails)
+  const levelEndTimestamp = ref<number | null>(savedState?.levelEndTimestamp ?? null)
   // Language and currency
   const language = ref<SupportedLocale>(savedSettings?.language ?? detectBrowserLanguage())
   const currency = ref<CurrencyCode>(savedSettings?.currency ?? 'CZK')
+
+  // Recovery: if timer was running and we have a timestamp, recalculate remainingSeconds
+  if (savedState?.isRunning && savedState?.levelEndTimestamp) {
+    const now = Date.now()
+    const calculatedRemaining = Math.max(0, Math.floor((savedState.levelEndTimestamp - now) / 1000))
+    // Use the more accurate value (timestamp-based) if it differs significantly
+    if (Math.abs(calculatedRemaining - remainingSeconds.value) > 2) {
+      remainingSeconds.value = calculatedRemaining
+    }
+  }
 
   // Getters
   const currentLevel = computed(() => structure.value[currentLevelIndex.value])
@@ -117,12 +129,13 @@ export const useTournamentStore = defineStore('tournament', () => {
       currency: currency.value,
     })
   })
-  watch([currentLevelIndex, remainingSeconds, isRunning, finishOrder], () => {
+  watch([currentLevelIndex, remainingSeconds, isRunning, finishOrder, levelEndTimestamp], () => {
     storage.saveState({
       currentLevelIndex: currentLevelIndex.value,
       remainingSeconds: remainingSeconds.value,
       isRunning: isRunning.value,
       finishOrder: finishOrder.value,
+      levelEndTimestamp: levelEndTimestamp.value,
     })
   }, { deep: true })
 
@@ -138,6 +151,12 @@ export const useTournamentStore = defineStore('tournament', () => {
     if (currentLevel.value) {
       // Použít globální délku podle typu levelu
       remainingSeconds.value = currentLevel.value.isBreak ? breakDuration.value : levelDuration.value
+      // Update timestamp if timer is running
+      if (isRunning.value) {
+        levelEndTimestamp.value = Date.now() + remainingSeconds.value * 1000
+      } else {
+        levelEndTimestamp.value = null
+      }
     }
   }
 
@@ -145,10 +164,22 @@ export const useTournamentStore = defineStore('tournament', () => {
     if (remainingSeconds.value === 0) {
       initializeLevel()
     }
+    // Set end timestamp for fallback recovery
+    levelEndTimestamp.value = Date.now() + remainingSeconds.value * 1000
     isRunning.value = true
   }
 
   function pause() {
+    // Recalculate remaining time from timestamp if available (more accurate)
+    if (levelEndTimestamp.value) {
+      const now = Date.now()
+      const calculatedRemaining = Math.max(0, Math.floor((levelEndTimestamp.value - now) / 1000))
+      // Use timestamp-based value if reasonable
+      if (calculatedRemaining >= 0) {
+        remainingSeconds.value = calculatedRemaining
+      }
+    }
+    levelEndTimestamp.value = null
     isRunning.value = false
   }
 
@@ -286,6 +317,7 @@ export const useTournamentStore = defineStore('tournament', () => {
   function reset() {
     currentLevelIndex.value = 0
     isRunning.value = false
+    levelEndTimestamp.value = null
     initializeLevel()
   }
 
@@ -295,6 +327,7 @@ export const useTournamentStore = defineStore('tournament', () => {
     finishOrder.value = []
     currentLevelIndex.value = 0
     isRunning.value = false
+    levelEndTimestamp.value = null
     startingStack.value = 10000
     buyinAmount.value = 100
     useAnte.value = true
@@ -312,6 +345,10 @@ export const useTournamentStore = defineStore('tournament', () => {
 
   function adjustTime(seconds: number) {
     remainingSeconds.value = Math.max(0, remainingSeconds.value + seconds)
+    // Update timestamp if timer is running
+    if (isRunning.value) {
+      levelEndTimestamp.value = Date.now() + remainingSeconds.value * 1000
+    }
   }
 
   // Initialize level time if not restored from storage
