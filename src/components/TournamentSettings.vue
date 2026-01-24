@@ -29,52 +29,45 @@ const chipBreakdown = computed(() => {
   const sortedChips = [...store.chips].sort((a, b) => a.value - b.value)
   const breakdown: { id: string; value: number; count: number; color: string; label: string }[] = []
 
-  // Get early blind levels (first 3 non-break levels)
-  const earlyBlinds = store.structure
-    .filter(l => !l.isBreak)
-    .slice(0, 3)
-    .flatMap(l => [l.smallBlind, l.bigBlind, l.ante])
-    .filter(v => v > 0)
-
-  // Find which chip denominations are needed for early blinds
-  const neededDenominations = new Set<number>()
-  for (const blind of earlyBlinds) {
-    for (const chip of sortedChips) {
-      if (blind % chip.value === 0 || chip.value <= blind) {
-        neededDenominations.add(chip.value)
-      }
-    }
-  }
+  // Standard chip set has 100 chips per denomination
+  const CHIPS_PER_COLOR = 100
+  const playerCount = Math.max(1, store.players.length || 8) // Default to 8 if no players yet
+  const maxPerPlayer = Math.floor(CHIPS_PER_COLOR / playerCount)
 
   let remaining = stack
   const distributions: Record<string, number> = {}
 
   // Scale chip counts based on stack size (base counts for 10,000 stack)
   const scaleFactor = Math.max(1, stack / 10000)
+  const chipCount = sortedChips.length
 
-  // Ensure enough small chips for early game (scales with stack)
-  // Give more chips to smaller denominations needed for blinds
-  for (let i = 0; i < sortedChips.length; i++) {
+  // Ensure enough chips for all game phases (scales with stack)
+  // Distribute across all denominations, not just the smallest
+  for (let i = 0; i < chipCount; i++) {
     const chip = sortedChips[i]
     if (!chip) continue
 
     let baseCount = 0
-    if (i === 0) {
-      // Smallest denomination: base 12 chips for SB payments
-      baseCount = 12
-    } else if (i === 1) {
-      // Second smallest: base 10 chips
+    // Skip the highest denomination - it will be filled with remaining
+    if (i === chipCount - 1) {
+      baseCount = 0
+    } else if (i === 0) {
+      // Smallest: 10 chips
       baseCount = 10
-    } else if (i === 2) {
-      // Third smallest: base 8 chips
+    } else if (i === 1) {
+      // Second smallest: 8 chips
       baseCount = 8
-    } else if (neededDenominations.has(chip.value)) {
-      // Other denominations needed for blinds: base 4 chips
+    } else if (i === 2) {
+      // Third smallest: 6 chips
+      baseCount = 6
+    } else {
+      // Middle denominations: 4 chips each
       baseCount = 4
     }
 
-    // Scale with stack size
-    const minCount = Math.round(baseCount * scaleFactor)
+    // Scale with stack size, but don't exceed available chips per player
+    const scaledCount = Math.round(baseCount * scaleFactor)
+    const minCount = Math.min(scaledCount, maxPerPlayer)
 
     // Don't exceed what we can afford
     const maxAffordable = Math.floor(remaining / chip.value)
@@ -86,13 +79,15 @@ const chipBreakdown = computed(() => {
     }
   }
 
-  // Fill rest with highest denominations first
+  // Fill rest with highest denominations first (respecting chip set limits)
   for (let i = sortedChips.length - 1; i >= 0; i--) {
     const chip = sortedChips[i]
     if (!chip) continue
-    const additionalCount = Math.floor(remaining / chip.value)
+    const currentCount = distributions[chip.id] || 0
+    const canAdd = Math.max(0, maxPerPlayer - currentCount)
+    const additionalCount = Math.min(canAdd, Math.floor(remaining / chip.value))
     if (additionalCount > 0) {
-      distributions[chip.id] = (distributions[chip.id] || 0) + additionalCount
+      distributions[chip.id] = currentCount + additionalCount
       remaining -= additionalCount * chip.value
     }
   }
