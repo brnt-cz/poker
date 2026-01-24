@@ -66,8 +66,8 @@ function close() {
               v-model="store.language"
               class="px-2 py-1.5 bg-gray-700 text-white text-sm rounded border border-gray-600 focus:border-primary-500 focus:outline-none cursor-pointer"
             >
-              <option value="cs">CZ</option>
-              <option value="en">EN</option>
+              <option value="cs">🇨🇿&ensp;CZ</option>
+              <option value="en">🇬🇧&ensp;EN</option>
             </select>
             <!-- Currency -->
             <select

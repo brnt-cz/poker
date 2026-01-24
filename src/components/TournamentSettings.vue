@@ -337,10 +337,10 @@ function setBreakDuration(minutes: number) {
           >
             <div class="flex items-center gap-2">
               <div
-                class="w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold shadow-md"
+                class="w-7 h-7 rounded-full grid place-items-center text-[10px] font-bold shadow-md"
                 :style="{ backgroundColor: chip.color, color: chip.color === '#ffffff' || chip.color === '#eab308' ? '#000' : '#fff', outline: (chip.color === '#ffffff' ? '#3b82f6' : 'white') + ' dashed 3px', outlineOffset: '-3px' }"
               >
-                {{ formatChipValue(chip.value) }}
+                <span class="leading-none mt-px">{{ formatChipValue(chip.value) }}</span>
               </div>
               <span class="text-gray-300">{{ chip.label }}</span>
             </div>

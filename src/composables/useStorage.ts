@@ -29,6 +29,7 @@ interface StoredState {
   remainingSeconds: number
   isRunning: boolean
   finishOrder?: { id: string; name: string; position: number }[]
+  levelEndTimestamp?: number | null  // Fallback timestamp when level should end
 }
 
 export function useStorage() {

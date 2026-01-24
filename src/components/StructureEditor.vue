@@ -33,6 +33,21 @@ function formatTime(seconds: number): string {
   return `${mins} min`
 }
 
+// Compute display index (skips breaks when they are hidden)
+function getDisplayIndex(index: number): number {
+  if (store.useBreaks) {
+    return index + 1
+  }
+  // Count only non-break levels up to this index
+  let count = 0
+  for (let i = 0; i <= index; i++) {
+    if (!store.structure[i]?.isBreak) {
+      count++
+    }
+  }
+  return count
+}
+
 function startEdit(index: number) {
   const level = store.structure[index]
   if (!level) return
@@ -194,7 +209,7 @@ async function resetStructure() {
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16" />
                 </svg>
               </div>
-              <span class="text-gray-500 text-sm w-6">{{ index + 1 }}.</span>
+              <span class="text-gray-500 text-sm w-6">{{ getDisplayIndex(index) }}.</span>
               <div v-if="level.isBreak" class="text-green-400">
                 {{ $t('timer.break') }}
                 <span class="text-green-600 text-sm ml-1">({{ formatTime(store.breakDuration) }})</span>
