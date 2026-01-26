@@ -54,20 +54,35 @@ function stopEditChip() {
   editingChipId.value = null
 }
 
-const availableColors = computed(() => [
-  { value: '#ffffff', label: t('colors.white') },
-  { value: '#ef4444', label: t('colors.red') },
-  { value: '#3b82f6', label: t('colors.blue') },
-  { value: '#16a34a', label: t('colors.green') },
-  { value: '#181a1c', label: t('colors.black') },
-  { value: '#9333ea', label: t('colors.purple') },
-  { value: '#eab308', label: t('colors.yellow') },
-  { value: '#f97316', label: t('colors.orange') },
-  { value: '#ec4899', label: t('colors.pink') },
-  { value: '#6b7280', label: t('colors.gray') },
-  { value: '#06b6d4', label: t('colors.turquoise') },
-  { value: '#92400e', label: t('colors.brown') },
-])
+// Map color hex to translation key
+const colorKeyMap: Record<string, string> = {
+  '#ffffff': 'white',
+  '#ef4444': 'red',
+  '#3b82f6': 'blue',
+  '#16a34a': 'green',
+  '#181a1c': 'black',
+  '#9333ea': 'purple',
+  '#eab308': 'yellow',
+  '#f97316': 'orange',
+  '#ec4899': 'pink',
+  '#6b7280': 'gray',
+  '#06b6d4': 'turquoise',
+  '#92400e': 'brown',
+}
+
+// Get translated color label from hex
+function getColorLabel(hex: string): string {
+  const key = colorKeyMap[hex]
+  return key ? t(`colors.${key}`) : hex
+}
+
+const availableColors = computed(() =>
+  Object.entries(colorKeyMap).map(([value, key]) => ({
+    value,
+    key,
+    label: t(`colors.${key}`)
+  }))
+)
 </script>
 
 <template>
@@ -117,7 +132,7 @@ const availableColors = computed(() => [
               @click="startEditChip(chip.id, $event)"
               class="w-8 h-8 rounded-full hover:scale-110 transition-transform"
               :style="{ backgroundColor: chip.color, outline: (chip.color === '#ffffff' ? '#3b82f6' : 'white') + ' dashed 4px', outlineOffset: '-4px' }"
-              :title="chip.label"
+              :title="getColorLabel(chip.color)"
             />
           </div>
 
@@ -156,7 +171,7 @@ const availableColors = computed(() => [
           <button
             v-for="color in availableColors"
             :key="color.value"
-            @click="store.updateChip(editingChipId!, { color: color.value, label: color.label }); stopEditChip()"
+            @click="store.updateChip(editingChipId!, { color: color.value, label: color.key }); stopEditChip()"
             class="w-12 h-12 sm:w-10 sm:h-10 rounded-full border-2 border-gray-500 hover:border-white active:scale-95 transition-all"
             :style="{ backgroundColor: color.value }"
             :title="color.label"
