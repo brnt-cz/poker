@@ -10,6 +10,28 @@ const { t } = useI18n()
 const { getBuyinStep, getBountyStep } = useCurrency()
 const confirmDialog = ref<InstanceType<typeof ConfirmDialog> | null>(null)
 
+// Map color hex to translation key
+const colorKeyMap: Record<string, string> = {
+  '#ffffff': 'white',
+  '#ef4444': 'red',
+  '#3b82f6': 'blue',
+  '#16a34a': 'green',
+  '#181a1c': 'black',
+  '#9333ea': 'purple',
+  '#eab308': 'yellow',
+  '#f97316': 'orange',
+  '#ec4899': 'pink',
+  '#6b7280': 'gray',
+  '#06b6d4': 'turquoise',
+  '#92400e': 'brown',
+}
+
+// Get translated color label from hex
+function getColorLabel(hex: string): string {
+  const key = colorKeyMap[hex]
+  return key ? t(`colors.${key}`) : hex
+}
+
 async function resetAll() {
   const confirmed = await confirmDialog.value?.open({
     title: t('resetAll.title'),
@@ -383,7 +405,7 @@ function setBreakDuration(minutes: number) {
               >
                 <span class="leading-none mt-px">{{ formatChipValue(chip.value) }}</span>
               </div>
-              <span class="text-gray-300">{{ chip.label }}</span>
+              <span class="text-gray-300">{{ getColorLabel(chip.color) }}</span>
             </div>
             <div class="flex items-center gap-3">
               <span class="text-white font-medium">{{ chip.count }}×</span>
