@@ -105,5 +105,20 @@ export default {
   },
   debug: {
     title: 'Debug zvuků'
+  },
+  help: {
+    title: 'Pokerové kombinace',
+    hands: {
+      royalFlush: { name: 'Královská postupka', desc: 'A, K, Q, J, 10 stejné barvy' },
+      straightFlush: { name: 'Postupka v barvě', desc: '5 karet v řadě stejné barvy' },
+      fourOfAKind: { name: 'Poker (čtveřice)', desc: '4 karty stejné hodnoty' },
+      fullHouse: { name: 'Full house', desc: 'Trojice + dvojice' },
+      flush: { name: 'Barva (flush)', desc: '5 karet stejné barvy' },
+      straight: { name: 'Postupka', desc: '5 karet v řadě' },
+      threeOfAKind: { name: 'Trojice', desc: '3 karty stejné hodnoty' },
+      twoPair: { name: 'Dva páry', desc: '2 různé dvojice' },
+      onePair: { name: 'Pár', desc: '2 karty stejné hodnoty' },
+      highCard: { name: 'Vysoká karta', desc: 'Žádná kombinace' }
+    }
   }
 }
