@@ -5,6 +5,7 @@ import ControlPanel from '@/components/ControlPanel.vue'
 import Stats from '@/components/Stats.vue'
 import WakeLockToggle from '@/components/WakeLockToggle.vue'
 import SettingsDrawer from '@/components/SettingsDrawer.vue'
+import HandRankingsHelp from '@/components/HandRankingsHelp.vue'
 import { useTimer } from '@/composables/useTimer'
 
 // Inicializace timeru (spustí interval sledování)
@@ -22,6 +23,7 @@ useTimer()
           <span class="hidden sm:inline">Poker Timer</span>
         </h1>
         <div class="flex items-center gap-1 sm:gap-2 landscape:ml-0">
+          <HandRankingsHelp />
           <WakeLockToggle class="lg:hidden" />
           <SettingsDrawer />
         </div>

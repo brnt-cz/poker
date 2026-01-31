@@ -105,5 +105,20 @@ export default {
   },
   debug: {
     title: 'Debug sounds'
+  },
+  help: {
+    title: 'Poker Hand Rankings',
+    hands: {
+      royalFlush: { name: 'Royal Flush', desc: 'A, K, Q, J, 10 of the same suit' },
+      straightFlush: { name: 'Straight Flush', desc: '5 cards in sequence, same suit' },
+      fourOfAKind: { name: 'Four of a Kind', desc: '4 cards of the same rank' },
+      fullHouse: { name: 'Full House', desc: 'Three of a kind + a pair' },
+      flush: { name: 'Flush', desc: '5 cards of the same suit' },
+      straight: { name: 'Straight', desc: '5 cards in sequence' },
+      threeOfAKind: { name: 'Three of a Kind', desc: '3 cards of the same rank' },
+      twoPair: { name: 'Two Pair', desc: '2 different pairs' },
+      onePair: { name: 'One Pair', desc: '2 cards of the same rank' },
+      highCard: { name: 'High Card', desc: 'No combination' }
+    }
   }
 }
