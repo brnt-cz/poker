@@ -18,6 +18,7 @@ interface StoredSettings {
   useBounty?: boolean
   bountyAmount?: number
   useBreaks?: boolean
+  maxRebuys?: number
   levelDuration?: number
   breakDuration?: number
   language?: SupportedLocale

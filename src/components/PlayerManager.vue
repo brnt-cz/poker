@@ -40,6 +40,10 @@ const canRebuy = computed(() => {
   return store.allowRebuy && store.elapsedSeconds < 3600
 })
 
+function canPlayerRebuy(player: { buyinCount: number }): boolean {
+  return canRebuy.value && (player.buyinCount - 1) < store.maxRebuys
+}
+
 // Prize distribution based on number of players
 const prizeDistribution = computed(() => {
   const playerCount = store.totalPlayers
@@ -138,7 +142,7 @@ const prizeDistribution = computed(() => {
               {{ $t('players.bust') }}
             </button>
             <button
-              v-else-if="canRebuy"
+              v-else-if="canPlayerRebuy(player)"
               @click="store.rebuyPlayer(player.id)"
               class="px-2 py-1 text-xs bg-green-700 hover:bg-green-600 rounded transition-colors"
               :title="$t('players.rebuy')"

@@ -26,6 +26,7 @@ export const useTournamentStore = defineStore('tournament', () => {
   const buyinAmount = ref(savedSettings?.buyinAmount ?? 100)
   const useAnte = ref(savedSettings?.useAnte ?? true)
   const allowRebuy = ref(savedSettings?.allowRebuy ?? true)
+  const maxRebuys = ref(savedSettings?.maxRebuys ?? 1)
   const useBounty = ref(savedSettings?.useBounty ?? false)
   const bountyAmount = ref(savedSettings?.bountyAmount ?? 50)
   const useBreaks = ref(savedSettings?.useBreaks ?? true)
@@ -54,11 +55,18 @@ export const useTournamentStore = defineStore('tournament', () => {
   const currentLevel = computed(() => structure.value[currentLevelIndex.value])
 
   const nextLevel = computed(() => {
-    const nextIndex = currentLevelIndex.value + 1
+    let nextIndex = currentLevelIndex.value + 1
+    // Skip break levels when breaks are disabled
+    while (!useBreaks.value && nextIndex < structure.value.length && structure.value[nextIndex]?.isBreak) {
+      nextIndex++
+    }
     return nextIndex < structure.value.length ? structure.value[nextIndex] : null
   })
 
-  const isBreak = computed(() => currentLevel.value?.isBreak ?? false)
+  const isBreak = computed(() => {
+    if (!useBreaks.value) return false
+    return currentLevel.value?.isBreak ?? false
+  })
 
   const totalPlayers = computed(() => players.value.length)
 
@@ -114,12 +122,13 @@ export const useTournamentStore = defineStore('tournament', () => {
       }
     })
   })
-  watch([startingStack, buyinAmount, useAnte, allowRebuy, useBounty, bountyAmount, useBreaks, levelDuration, breakDuration, language, currency], () => {
+  watch([startingStack, buyinAmount, useAnte, allowRebuy, maxRebuys, useBounty, bountyAmount, useBreaks, levelDuration, breakDuration, language, currency], () => {
     storage.saveSettings({
       startingStack: startingStack.value,
       buyinAmount: buyinAmount.value,
       useAnte: useAnte.value,
       allowRebuy: allowRebuy.value,
+      maxRebuys: maxRebuys.value,
       useBounty: useBounty.value,
       bountyAmount: bountyAmount.value,
       useBreaks: useBreaks.value,
@@ -198,15 +207,25 @@ export const useTournamentStore = defineStore('tournament', () => {
   }
 
   function goToNextLevel() {
-    if (currentLevelIndex.value < structure.value.length - 1) {
-      currentLevelIndex.value++
+    let nextIndex = currentLevelIndex.value + 1
+    // Skip break levels when breaks are disabled
+    while (!useBreaks.value && nextIndex < structure.value.length && structure.value[nextIndex]?.isBreak) {
+      nextIndex++
+    }
+    if (nextIndex < structure.value.length) {
+      currentLevelIndex.value = nextIndex
       initializeLevel()
     }
   }
 
   function goToPreviousLevel() {
-    if (currentLevelIndex.value > 0) {
-      currentLevelIndex.value--
+    let prevIndex = currentLevelIndex.value - 1
+    // Skip break levels when breaks are disabled
+    while (!useBreaks.value && prevIndex >= 0 && structure.value[prevIndex]?.isBreak) {
+      prevIndex--
+    }
+    if (prevIndex >= 0) {
+      currentLevelIndex.value = prevIndex
       initializeLevel()
     }
   }
@@ -332,6 +351,7 @@ export const useTournamentStore = defineStore('tournament', () => {
     buyinAmount.value = 100
     useAnte.value = true
     allowRebuy.value = true
+    maxRebuys.value = 1
     useBounty.value = false
     bountyAmount.value = 50
     useBreaks.value = true
@@ -367,6 +387,7 @@ export const useTournamentStore = defineStore('tournament', () => {
     buyinAmount,
     useAnte,
     allowRebuy,
+    maxRebuys,
     useBounty,
     bountyAmount,
     useBreaks,
