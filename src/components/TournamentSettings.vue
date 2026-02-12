@@ -166,6 +166,10 @@ function adjustBreakDuration(amount: number) {
   store.breakDuration = Math.max(60, store.breakDuration + amount)
 }
 
+function adjustMaxRebuys(amount: number) {
+  store.maxRebuys = Math.max(1, store.maxRebuys + amount)
+}
+
 function formatDuration(seconds: number): number {
   return Math.floor(seconds / 60)
 }
@@ -377,6 +381,31 @@ function setBreakDuration(minutes: number) {
           </div>
           <span class="text-sm text-gray-300">{{ $t('settings.bounty') }}</span>
         </label>
+      </div>
+
+      <!-- Max Rebuys -->
+      <div v-if="store.allowRebuy">
+        <label class="block text-sm text-gray-400 mb-2">{{ $t('settings.maxRebuys') }}</label>
+        <div class="flex items-stretch bg-gray-700 rounded-lg overflow-hidden">
+          <button
+            @click="adjustMaxRebuys(-1)"
+            class="w-12 flex items-center justify-center bg-gray-600 hover:bg-gray-500 text-xl font-bold transition-colors shrink-0"
+          >
+            &minus;
+          </button>
+          <input
+            v-model.number="store.maxRebuys"
+            type="number"
+            min="1"
+            class="flex-1 min-w-0 px-2 py-2 bg-gray-700 text-white text-center font-medium focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+          />
+          <button
+            @click="adjustMaxRebuys(1)"
+            class="w-12 flex items-center justify-center bg-gray-600 hover:bg-gray-500 text-xl font-bold transition-colors shrink-0"
+          >
+            +
+          </button>
+        </div>
       </div>
 
       <!-- Chip Breakdown -->

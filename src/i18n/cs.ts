@@ -48,6 +48,7 @@ export default {
     breakDuration: 'Délka pauzy (min)',
     ante: 'Ante',
     rebuy: 'Rebuy',
+    maxRebuys: 'Max re-buyů',
     chipBreakdown: 'Rozložení žetonů',
     total: 'Celkem',
     language: 'Jazyk',

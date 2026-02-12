@@ -48,6 +48,7 @@ export default {
     breakDuration: 'Break duration (min)',
     ante: 'Ante',
     rebuy: 'Rebuy',
+    maxRebuys: 'Max rebuys',
     chipBreakdown: 'Chip breakdown',
     total: 'Total',
     language: 'Language',
