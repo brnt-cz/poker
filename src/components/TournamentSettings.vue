@@ -170,6 +170,10 @@ function adjustMaxRebuys(amount: number) {
   store.maxRebuys = Math.max(1, store.maxRebuys + amount)
 }
 
+function adjustRebuyMinutes(amount: number) {
+  store.rebuyMinutes = Math.max(5, store.rebuyMinutes + amount)
+}
+
 function formatDuration(seconds: number): number {
   return Math.floor(seconds / 60)
 }
@@ -383,28 +387,57 @@ function setBreakDuration(minutes: number) {
         </label>
       </div>
 
-      <!-- Max Rebuys -->
-      <div v-if="store.allowRebuy">
-        <label class="block text-sm text-gray-400 mb-2">{{ $t('settings.maxRebuys') }}</label>
-        <div class="flex items-stretch bg-gray-700 rounded-lg overflow-hidden">
-          <button
-            @click="adjustMaxRebuys(-1)"
-            class="w-12 flex items-center justify-center bg-gray-600 hover:bg-gray-500 text-xl font-bold transition-colors shrink-0"
-          >
-            &minus;
-          </button>
-          <input
-            v-model.number="store.maxRebuys"
-            type="number"
-            min="1"
-            class="flex-1 min-w-0 px-2 py-2 bg-gray-700 text-white text-center font-medium focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-          />
-          <button
-            @click="adjustMaxRebuys(1)"
-            class="w-12 flex items-center justify-center bg-gray-600 hover:bg-gray-500 text-xl font-bold transition-colors shrink-0"
-          >
-            +
-          </button>
+      <!-- Rebuy Settings -->
+      <div v-if="store.allowRebuy" class="grid grid-cols-2 gap-3">
+        <!-- Max Rebuys -->
+        <div>
+          <label class="block text-sm text-gray-400 mb-2">{{ $t('settings.maxRebuys') }}</label>
+          <div class="flex items-stretch bg-gray-700 rounded-lg overflow-hidden">
+            <button
+              @click="adjustMaxRebuys(-1)"
+              class="w-12 flex items-center justify-center bg-gray-600 hover:bg-gray-500 text-xl font-bold transition-colors shrink-0"
+            >
+              &minus;
+            </button>
+            <input
+              v-model.number="store.maxRebuys"
+              type="number"
+              min="1"
+              class="flex-1 min-w-0 px-2 py-2 bg-gray-700 text-white text-center font-medium focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+            />
+            <button
+              @click="adjustMaxRebuys(1)"
+              class="w-12 flex items-center justify-center bg-gray-600 hover:bg-gray-500 text-xl font-bold transition-colors shrink-0"
+            >
+              +
+            </button>
+          </div>
+        </div>
+
+        <!-- Rebuy Time Limit -->
+        <div>
+          <label class="block text-sm text-gray-400 mb-2">{{ $t('settings.rebuyMinutes') }}</label>
+          <div class="flex items-stretch bg-gray-700 rounded-lg overflow-hidden">
+            <button
+              @click="adjustRebuyMinutes(-5)"
+              class="w-12 flex items-center justify-center bg-gray-600 hover:bg-gray-500 text-xl font-bold transition-colors shrink-0"
+            >
+              &minus;
+            </button>
+            <input
+              v-model.number="store.rebuyMinutes"
+              type="number"
+              min="5"
+              step="5"
+              class="flex-1 min-w-0 px-2 py-2 bg-gray-700 text-white text-center font-medium focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+            />
+            <button
+              @click="adjustRebuyMinutes(5)"
+              class="w-12 flex items-center justify-center bg-gray-600 hover:bg-gray-500 text-xl font-bold transition-colors shrink-0"
+            >
+              +
+            </button>
+          </div>
         </div>
       </div>
 

@@ -49,6 +49,7 @@ export default {
     ante: 'Ante',
     rebuy: 'Rebuy',
     maxRebuys: 'Max re-buyů',
+    rebuyMinutes: 'Čas na rebuy (min)',
     chipBreakdown: 'Rozložení žetonů',
     total: 'Celkem',
     language: 'Jazyk',
