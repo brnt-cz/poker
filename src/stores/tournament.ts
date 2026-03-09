@@ -27,6 +27,7 @@ export const useTournamentStore = defineStore('tournament', () => {
   const useAnte = ref(savedSettings?.useAnte ?? true)
   const allowRebuy = ref(savedSettings?.allowRebuy ?? true)
   const maxRebuys = ref(savedSettings?.maxRebuys ?? 1)
+  const rebuyMinutes = ref(savedSettings?.rebuyMinutes ?? 60)
   const useBounty = ref(savedSettings?.useBounty ?? false)
   const bountyAmount = ref(savedSettings?.bountyAmount ?? 50)
   const useBreaks = ref(savedSettings?.useBreaks ?? true)
@@ -122,13 +123,14 @@ export const useTournamentStore = defineStore('tournament', () => {
       }
     })
   })
-  watch([startingStack, buyinAmount, useAnte, allowRebuy, maxRebuys, useBounty, bountyAmount, useBreaks, levelDuration, breakDuration, language, currency], () => {
+  watch([startingStack, buyinAmount, useAnte, allowRebuy, maxRebuys, rebuyMinutes, useBounty, bountyAmount, useBreaks, levelDuration, breakDuration, language, currency], () => {
     storage.saveSettings({
       startingStack: startingStack.value,
       buyinAmount: buyinAmount.value,
       useAnte: useAnte.value,
       allowRebuy: allowRebuy.value,
       maxRebuys: maxRebuys.value,
+      rebuyMinutes: rebuyMinutes.value,
       useBounty: useBounty.value,
       bountyAmount: bountyAmount.value,
       useBreaks: useBreaks.value,
@@ -352,6 +354,7 @@ export const useTournamentStore = defineStore('tournament', () => {
     useAnte.value = true
     allowRebuy.value = true
     maxRebuys.value = 1
+    rebuyMinutes.value = 60
     useBounty.value = false
     bountyAmount.value = 50
     useBreaks.value = true
@@ -388,6 +391,7 @@ export const useTournamentStore = defineStore('tournament', () => {
     useAnte,
     allowRebuy,
     maxRebuys,
+    rebuyMinutes,
     useBounty,
     bountyAmount,
     useBreaks,

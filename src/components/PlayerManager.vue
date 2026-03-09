@@ -37,7 +37,7 @@ function formatNumber(num: number): string {
 
 // Rebuy allowed only in first hour and if enabled
 const canRebuy = computed(() => {
-  return store.allowRebuy && store.elapsedSeconds < 3600
+  return store.allowRebuy && store.elapsedSeconds < store.rebuyMinutes * 60
 })
 
 function canPlayerRebuy(player: { buyinCount: number }): boolean {

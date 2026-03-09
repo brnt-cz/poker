@@ -49,6 +49,7 @@ export default {
     ante: 'Ante',
     rebuy: 'Rebuy',
     maxRebuys: 'Max rebuys',
+    rebuyMinutes: 'Rebuy time (min)',
     chipBreakdown: 'Chip breakdown',
     total: 'Total',
     language: 'Language',
