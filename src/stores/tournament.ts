@@ -33,7 +33,12 @@ export const useTournamentStore = defineStore('tournament', () => {
   const useBreaks = ref(savedSettings?.useBreaks ?? true)
   const levelDuration = ref(savedSettings?.levelDuration ?? 1200) // 20 minut v sekundách
   const breakDuration = ref(savedSettings?.breakDuration ?? 600) // 10 minut v sekundách
-  const chips = ref<ChipDenomination[]>(savedChips || [...defaultChips])
+  // Migrate legacy chips (without count) to new format
+  const migratedChips = savedChips?.map(c => ({
+    ...c,
+    count: typeof c.count === 'number' ? c.count : 50,
+  }))
+  const chips = ref<ChipDenomination[]>(migratedChips || [...defaultChips])
   // Track finish order - players who busted (last element = last to bust = 2nd place)
   const finishOrder = ref<{ id: string; name: string; position: number }[]>(savedState?.finishOrder ?? [])
   // Fallback timestamp - when the level should end (used for recovery if timer fails)
@@ -314,6 +319,7 @@ export const useTournamentStore = defineStore('tournament', () => {
       value: maxValue * 2 || 10000,
       color: '#6b7280',
       label: 'Nový',
+      count: 25,
     })
   }
 

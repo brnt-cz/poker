@@ -21,16 +21,17 @@ export interface ChipDenomination {
   value: number
   color: string
   label: string
+  count: number
 }
 
 export const defaultChips: ChipDenomination[] = [
-  { id: '1', value: 5, color: '#ffffff', label: 'Bílá' },
-  { id: '2', value: 10, color: '#ef4444', label: 'Červená' },
-  { id: '3', value: 25, color: '#16a34a', label: 'Zelená' },
-  { id: '4', value: 100, color: '#181a1c', label: 'Černá' },
-  { id: '5', value: 500, color: '#9333ea', label: 'Fialová' },
-  { id: '6', value: 1000, color: '#eab308', label: 'Žlutá' },
-  { id: '7', value: 5000, color: '#f97316', label: 'Oranžová' },
+  { id: '1', value: 5, color: '#ffffff', label: 'Bílá', count: 60 },
+  { id: '2', value: 10, color: '#ef4444', label: 'Červená', count: 60 },
+  { id: '3', value: 25, color: '#16a34a', label: 'Zelená', count: 60 },
+  { id: '4', value: 100, color: '#181a1c', label: 'Černá', count: 50 },
+  { id: '5', value: 500, color: '#9333ea', label: 'Fialová', count: 30 },
+  { id: '6', value: 1000, color: '#eab308', label: 'Žlutá', count: 25 },
+  { id: '7', value: 5000, color: '#f97316', label: 'Oranžová', count: 15 },
 ]
 
 export interface TournamentConfig {

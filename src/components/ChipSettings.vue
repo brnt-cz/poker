@@ -120,6 +120,13 @@ const availableColors = computed(() =>
 
     <!-- Content -->
     <div class="p-4 flex-1 overflow-y-auto">
+      <!-- Column headers -->
+      <div class="flex items-center gap-3 px-1 mb-2 text-xs text-gray-500 uppercase tracking-wide">
+        <div class="w-8 shrink-0" />
+        <div class="w-20 text-center">{{ $t('chips.value') }}</div>
+        <div class="w-20 text-center">{{ $t('chips.count') }}</div>
+      </div>
+
       <div class="space-y-3">
         <div
           v-for="chip in store.chips"
@@ -142,6 +149,17 @@ const availableColors = computed(() =>
             @change="(e) => store.updateChip(chip.id, { value: parseInt((e.target as HTMLInputElement).value) || chip.value })"
             type="number"
             min="1"
+            :title="$t('chips.value')"
+            class="w-20 px-2 py-1.5 bg-gray-700 text-white text-center rounded border border-gray-600 focus:border-primary-500 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+          />
+
+          <!-- Count input -->
+          <input
+            :value="chip.count"
+            @change="(e) => store.updateChip(chip.id, { count: Math.max(0, parseInt((e.target as HTMLInputElement).value) || 0) })"
+            type="number"
+            min="0"
+            :title="$t('chips.count')"
             class="w-20 px-2 py-1.5 bg-gray-700 text-white text-center rounded border border-gray-600 focus:border-primary-500 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
           />
 

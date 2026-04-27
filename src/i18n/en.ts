@@ -53,7 +53,10 @@ export default {
     chipBreakdown: 'Chip breakdown',
     total: 'Total',
     language: 'Language',
-    currency: 'Currency'
+    currency: 'Currency',
+    perPlayers: 'for {count} players',
+    applyCalculatedStack: 'Use as stack',
+    applyCalculatedStackHint: 'Set starting stack based on chip distribution'
   },
   chips: {
     title: 'Chips',
@@ -62,7 +65,9 @@ export default {
     removeTitle: 'Remove chip',
     removeConfirm: 'Are you sure you want to remove chip "{label}"?',
     restoreTitle: 'Restore default chips',
-    restoreConfirm: 'Are you sure you want to restore default chip settings?'
+    restoreConfirm: 'Are you sure you want to restore default chip settings?',
+    value: 'Value',
+    count: 'Count'
   },
   colors: {
     white: 'White',
