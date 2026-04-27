@@ -45,94 +45,35 @@ async function resetAll() {
   }
 }
 
-// Calculate optimal chip distribution based on blind structure
+// Player count for chip distribution (actual or planning fallback)
+const breakdownPlayerCount = computed(() => Math.max(1, store.players.length || 8))
+
+// Distribute defined chip counts evenly among players
 const chipBreakdown = computed(() => {
-  const stack = store.startingStack
   const sortedChips = [...store.chips].sort((a, b) => a.value - b.value)
-  const breakdown: { id: string; value: number; count: number; color: string; label: string }[] = []
-
-  // Standard chip set has 100 chips per denomination
-  const CHIPS_PER_COLOR = 100
-  const playerCount = Math.max(1, store.players.length || 8) // Default to 8 if no players yet
-  const maxPerPlayer = Math.floor(CHIPS_PER_COLOR / playerCount)
-
-  let remaining = stack
-  const distributions: Record<string, number> = {}
-
-  // Scale chip counts based on stack size (base counts for 10,000 stack)
-  const scaleFactor = Math.max(1, stack / 10000)
-  const chipCount = sortedChips.length
-
-  // Ensure enough chips for all game phases (scales with stack)
-  // Distribute across all denominations, not just the smallest
-  for (let i = 0; i < chipCount; i++) {
-    const chip = sortedChips[i]
-    if (!chip) continue
-
-    let baseCount = 0
-    // Skip the highest denomination - it will be filled with remaining
-    if (i === chipCount - 1) {
-      baseCount = 0
-    } else if (i === 0) {
-      // Smallest: 10 chips
-      baseCount = 10
-    } else if (i === 1) {
-      // Second smallest: 8 chips
-      baseCount = 8
-    } else if (i === 2) {
-      // Third smallest: 6 chips
-      baseCount = 6
-    } else {
-      // Middle denominations: 4 chips each
-      baseCount = 4
-    }
-
-    // Scale with stack size, but don't exceed available chips per player
-    const scaledCount = Math.round(baseCount * scaleFactor)
-    const minCount = Math.min(scaledCount, maxPerPlayer)
-
-    // Don't exceed what we can afford
-    const maxAffordable = Math.floor(remaining / chip.value)
-    const count = Math.min(minCount, maxAffordable)
-
-    if (count > 0) {
-      distributions[chip.id] = count
-      remaining -= count * chip.value
-    }
-  }
-
-  // Fill rest with highest denominations first (respecting chip set limits)
-  for (let i = sortedChips.length - 1; i >= 0; i--) {
-    const chip = sortedChips[i]
-    if (!chip) continue
-    const currentCount = distributions[chip.id] || 0
-    const canAdd = Math.max(0, maxPerPlayer - currentCount)
-    const additionalCount = Math.min(canAdd, Math.floor(remaining / chip.value))
-    if (additionalCount > 0) {
-      distributions[chip.id] = currentCount + additionalCount
-      remaining -= additionalCount * chip.value
-    }
-  }
-
-  for (const chip of sortedChips) {
-    const count = distributions[chip.id] || 0
-    if (count > 0) {
-      breakdown.push({
-        id: chip.id,
-        value: chip.value,
-        count,
-        color: chip.color,
-        label: chip.label,
-      })
-    }
-  }
-
-  return breakdown
+  const players = breakdownPlayerCount.value
+  return sortedChips
+    .map(chip => ({
+      id: chip.id,
+      value: chip.value,
+      count: Math.floor((chip.count || 0) / players),
+      color: chip.color,
+      label: chip.label,
+    }))
+    .filter(c => c.count > 0)
 })
 
 const totalFromBreakdown = computed(() => {
   return chipBreakdown.value.reduce((sum, chip) => sum + chip.value * chip.count, 0)
 })
+
+const stackMatchesBreakdown = computed(() => totalFromBreakdown.value === store.startingStack)
+
+function applyCalculatedStack() {
+  if (totalFromBreakdown.value > 0) {
+    store.startingStack = totalFromBreakdown.value
+  }
+}
 
 function formatNumber(num: number): string {
   return num.toLocaleString('cs-CZ')
@@ -443,16 +384,27 @@ function setBreakDuration(minutes: number) {
 
       <!-- Chip Breakdown -->
       <div class="pt-3 border-t border-gray-700">
-        <div class="flex items-center gap-2 text-sm text-gray-400 mb-3">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="9" />
-            <circle cx="12" cy="12" r="5" />
-            <line x1="12" y1="3" x2="12" y2="7" />
-            <line x1="12" y1="17" x2="12" y2="21" />
-            <line x1="3" y1="12" x2="7" y2="12" />
-            <line x1="17" y1="12" x2="21" y2="12" />
-          </svg>
-          <span>{{ $t('settings.chipBreakdown') }}</span>
+        <div class="flex items-center justify-between gap-2 mb-3">
+          <div class="flex items-center gap-2 text-sm text-gray-400">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="9" />
+              <circle cx="12" cy="12" r="5" />
+              <line x1="12" y1="3" x2="12" y2="7" />
+              <line x1="12" y1="17" x2="12" y2="21" />
+              <line x1="3" y1="12" x2="7" y2="12" />
+              <line x1="17" y1="12" x2="21" y2="12" />
+            </svg>
+            <span>{{ $t('settings.chipBreakdown') }}</span>
+            <span class="text-gray-500">({{ $t('settings.perPlayers', { count: breakdownPlayerCount }) }})</span>
+          </div>
+          <button
+            v-if="!stackMatchesBreakdown && totalFromBreakdown > 0"
+            @click="applyCalculatedStack"
+            class="px-2 py-1 text-xs bg-primary-700 hover:bg-primary-600 rounded transition-colors"
+            :title="$t('settings.applyCalculatedStackHint')"
+          >
+            {{ $t('settings.applyCalculatedStack') }}
+          </button>
         </div>
         <div class="space-y-2">
           <div

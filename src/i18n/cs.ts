@@ -53,7 +53,10 @@ export default {
     chipBreakdown: 'Rozložení žetonů',
     total: 'Celkem',
     language: 'Jazyk',
-    currency: 'Měna'
+    currency: 'Měna',
+    perPlayers: 'pro {count} hráčů',
+    applyCalculatedStack: 'Použít jako stack',
+    applyCalculatedStackHint: 'Nastavit startovací stack podle rozložení žetonů'
   },
   chips: {
     title: 'Žetony',
@@ -62,7 +65,9 @@ export default {
     removeTitle: 'Odebrat žeton',
     removeConfirm: 'Opravdu chceš odebrat žeton "{label}"?',
     restoreTitle: 'Obnovit výchozí žetony',
-    restoreConfirm: 'Opravdu chceš obnovit výchozí nastavení žetonů?'
+    restoreConfirm: 'Opravdu chceš obnovit výchozí nastavení žetonů?',
+    value: 'Hodnota',
+    count: 'Počet'
   },
   colors: {
     white: 'Bílá',

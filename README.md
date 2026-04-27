@@ -51,9 +51,10 @@ Produkční verze aktuálně běží na https://brnt.cz/poker
 - Přepínač měny v nastavení turnaje
 
 ### Správa žetonů
-- Nastavitelné hodnoty a barvy žetonů
+- Nastavitelné hodnoty, barvy a **počet kusů** každého žetonu v sadě
 - 12 barevných možností
-- Automatický rozpis žetonů pro startovací stack
+- Automatický rozpis žetonů na hráče dle definovaných počtů
+- Tlačítko "Použít jako stack" – nastaví startovací stack podle rozpočítané distribuce
 
 ### Struktura blindů
 - Editovatelné levely s +/- ovládáním
@@ -152,8 +153,8 @@ src/
 ### Struktura blindů (19 levelů)
 Začíná na 5/10, přestávky každé 3 levely.
 
-### Hodnoty žetonů
-- 5 (Bílá), 10 (Červená), 25 (Zelená), 100 (Černá), 500 (Fialová), 1000 (Žlutá), 5000 (Oranžová)
+### Hodnoty žetonů (a výchozí počty v sadě)
+- 5 (Bílá) ×60, 10 (Červená) ×60, 25 (Zelená) ×60, 100 (Černá) ×50, 500 (Fialová) ×30, 1000 (Žlutá) ×25, 5000 (Oranžová) ×15
 
 ### Výchozí nastavení turnaje
 - Buy-in: 100 Kč
