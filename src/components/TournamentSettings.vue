@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { useTournamentStore } from '@/stores/tournament'
 import { useCurrency } from '@/composables/useCurrency'
 import ConfirmDialog from './ConfirmDialog.vue'
+import { calculateChipBreakdown } from '@/utils/chipBreakdown'
 
 const store = useTournamentStore()
 const { t } = useI18n()
@@ -48,26 +49,13 @@ async function resetAll() {
 // Player count for chip distribution (actual or planning fallback)
 const breakdownPlayerCount = computed(() => Math.max(1, store.players.length || 8))
 
-// Distribute defined chip counts evenly among players
-const chipBreakdown = computed(() => {
-  const sortedChips = [...store.chips].sort((a, b) => a.value - b.value)
-  const players = breakdownPlayerCount.value
-  return sortedChips
-    .map(chip => ({
-      id: chip.id,
-      value: chip.value,
-      count: Math.floor((chip.count || 0) / players),
-      color: chip.color,
-      label: chip.label,
-    }))
-    .filter(c => c.count > 0)
-})
-
-const totalFromBreakdown = computed(() => {
-  return chipBreakdown.value.reduce((sum, chip) => sum + chip.value * chip.count, 0)
-})
-
-const stackMatchesBreakdown = computed(() => totalFromBreakdown.value === store.startingStack)
+// Split the starting stack into chips the set can deal to every player (PKR-15)
+const breakdown = computed(() =>
+  calculateChipBreakdown(store.chips, store.startingStack, breakdownPlayerCount.value)
+)
+const chipBreakdown = computed(() => breakdown.value.items)
+const totalFromBreakdown = computed(() => breakdown.value.total)
+const stackMatchesBreakdown = computed(() => breakdown.value.exact)
 
 function applyCalculatedStack() {
   if (totalFromBreakdown.value > 0) {
@@ -431,8 +419,12 @@ function setBreakDuration(minutes: number) {
         <!-- Total -->
         <div class="flex items-center justify-between mt-3 pt-3 border-t border-gray-600">
           <span class="text-gray-400">{{ $t('settings.total') }}</span>
-          <span class="text-white font-bold">{{ formatNumber(totalFromBreakdown) }}</span>
+          <span class="font-bold" :class="stackMatchesBreakdown ? 'text-white' : 'text-amber-400'">{{ formatNumber(totalFromBreakdown) }}</span>
         </div>
+        <!-- The set cannot make the stack for this many players (PKR-15) -->
+        <p v-if="!stackMatchesBreakdown" class="mt-2 text-xs text-amber-400">
+          {{ $t('settings.stackNotComposable', { stack: formatNumber(store.startingStack), count: breakdownPlayerCount, total: formatNumber(totalFromBreakdown) }) }}
+        </p>
       </div>
 
     </div>

@@ -56,7 +56,8 @@ export default {
     currency: 'Měna',
     perPlayers: 'pro {count} hráčů',
     applyCalculatedStack: 'Použít jako stack',
-    applyCalculatedStackHint: 'Nastavit startovací stack podle rozložení žetonů'
+    applyCalculatedStackHint: 'Nastavit startovací stack podle rozložení žetonů',
+    stackNotComposable: 'Ze žetonů v sadě nejde složit stack {stack} pro {count} hráčů. Nejbližší nižší je {total}.'
   },
   chips: {
     title: 'Žetony',

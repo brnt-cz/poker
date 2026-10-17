@@ -53,8 +53,10 @@ Produkční verze aktuálně běží na https://brnt.cz/poker
 ### Správa žetonů
 - Nastavitelné hodnoty, barvy a **počet kusů** každého žetonu v sadě
 - 12 barevných možností
-- Automatický rozpis žetonů na hráče dle definovaných počtů
-- Tlačítko "Použít jako stack" – nastaví startovací stack podle rozpočítané distribuce
+- Automatický rozpis startovacího stacku na žetony pro jednoho hráče; přepočítá se při změně stacku, počtu hráčů i sady
+  - každé hodnoty nejvýš `počet v sadě / počet hráčů` kusů, aby se rozpis dal rozdat všem
+  - drobné žetony co nejblíž cílovým počtům (10 / 8 / 6 na 10 000), aby se v prvních kolech nemuselo rozměňovat; zbytek největšími hodnotami
+- Když sada na nastavený stack nestačí, ukáže se upozornění a nejbližší nižší součet; tlačítko "Použít jako stack" ho nastaví jako startovací stack
 
 ### Struktura blindů
 - Editovatelné levely s +/- ovládáním
@@ -143,6 +145,8 @@ src/
 │   └── en.ts                  # Anglické překlady
 ├── stores/
 │   └── tournament.ts          # Pinia store
+├── utils/
+│   └── chipBreakdown.ts       # Rozpis stacku na žetony
 ├── types/
 │   └── poker.ts               # TypeScript typy a výchozí hodnoty
 └── App.vue
