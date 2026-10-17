@@ -56,7 +56,8 @@ export default {
     currency: 'Currency',
     perPlayers: 'for {count} players',
     applyCalculatedStack: 'Use as stack',
-    applyCalculatedStackHint: 'Set starting stack based on chip distribution'
+    applyCalculatedStackHint: 'Set starting stack based on chip distribution',
+    stackNotComposable: 'The chip set cannot make a stack of {stack} for {count} players. The closest lower total is {total}.'
   },
   chips: {
     title: 'Chips',
